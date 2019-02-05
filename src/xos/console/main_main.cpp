@@ -33,7 +33,7 @@ int main(int argc, char** argv, char** env) {
     int err = 0;
     ERR_LOG_DEBUG("try {...");
     try {
-        ::xos::mt::os::mutex mutex(false);
+        ::xos::mt::os::mutex mutex(false, false);
         ::xos::console::std::derived::io io(mutex);
         ::xos::console::logger logger(io);
 

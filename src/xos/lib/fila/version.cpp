@@ -21,7 +21,7 @@
 #include "xos/lib/fila/version.hpp"
 
 #if !defined(XOS_LIB_FILA_VERSION_NAME)
-#define XOS_LIB_FILA_VERSION_NAME "fila"
+#define XOS_LIB_FILA_VERSION_NAME "libfila"
 #endif /// !defined(XOS_LIB_FILA_VERSION_NAME)
 
 #if !defined(XOS_LIB_FILA_VERSION_MAJOR)

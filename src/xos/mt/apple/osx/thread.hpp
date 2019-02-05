@@ -21,43 +21,14 @@
 #ifndef _XOS_MT_APPLE_OSX_THREAD_HPP
 #define _XOS_MT_APPLE_OSX_THREAD_HPP
 
-#include "xos/base/thread.hpp"
+#include "xos/mt/posix/thread.hpp"
 
 namespace xos {
 namespace mt {
 namespace apple {
 namespace osx {
 
-typedef thread threadt_implements;
-///////////////////////////////////////////////////////////////////////
-///  Class: threadt
-///////////////////////////////////////////////////////////////////////
-template <class TImplements = threadt_implements>
-class _EXPORT_CLASS threadt: virtual public TImplements {
-public:
-    typedef TImplements implements;
-};
-typedef threadt<> thread;
-
-typedef thread threadt_implements;
-typedef thread_extend threadt_extends;
-///////////////////////////////////////////////////////////////////////
-///  Class: threadt
-///////////////////////////////////////////////////////////////////////
-template <class TImplements = threadt_implements, class TExtends = threadt_extends>
-class _EXPORT_CLASS threadt: virtual public TImplements, public TExtends {
-public:
-    typedef TImplements implements;
-    typedef TExtends extends;
-
-    threadt(const threadt &copy) {
-    }
-    threadt() {
-    }
-    virtual ~threadt() {
-    }
-};
-typedef threadt<> thread;
+typedef posix::thread thread;
 
 } /// namespace osx
 } /// namespace apple

@@ -19,6 +19,7 @@
 ///   Date: 7/14/2018
 ///////////////////////////////////////////////////////////////////////
 #include "xos/app/console/fila/main.hpp"
+#include "xos/console/main_main.cpp"
 
 namespace xos {
 namespace app {

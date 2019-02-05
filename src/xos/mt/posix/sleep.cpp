@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-/// Copyright (c) 1988-2018 $organization$
+/// Copyright (c) 1988-2019 $organization$
 ///
 /// This software is provided by the author and contributors ``as is'' 
 /// and any express or implied warranties, including, but not limited to, 
@@ -13,28 +13,22 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: thread.cpp
+///   File: sleep.cpp
 ///
 /// Author: $author$
-///   Date: 4/11/2018
+///   Date: 2/4/2019
 ///////////////////////////////////////////////////////////////////////
-#include "xos/mt/microsoft/windows/crt/thread.hpp"
+#include "xos/mt/posix/sleep.hpp"
 
 namespace xos {
 namespace mt {
-namespace microsoft {
-namespace windows {
-namespace crt {
+namespace posix {
 
 ///////////////////////////////////////////////////////////////////////
-///  Class: threadt
+///  Class: sleept
 ///////////////////////////////////////////////////////////////////////
 
-} /// namespace crt
-} /// namespace windows
-} /// namespace microsoft
+} /// namespace posix
 } /// namespace mt
 } /// namespace xos
-
-        
 

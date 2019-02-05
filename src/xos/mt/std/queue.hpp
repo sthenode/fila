@@ -44,6 +44,12 @@ public:
 
     typedef TItem item_t;
 
+    queuet(bool is_logged, bool is_err_logged)
+    : cleared_(false), mutex_(is_logged, is_err_logged), semaphore_(is_logged, is_err_logged) {
+    }
+    queuet(bool is_logged)
+    : cleared_(false), mutex_(is_logged), semaphore_(is_logged) {
+    }
     queuet(): cleared_(false) {
     }
     virtual ~queuet() {
