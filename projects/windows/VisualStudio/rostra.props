@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<!--========================================================================-->
+<!-- Copyright (c) 1988-2019 $organization$                                 -->
+<!--                                                                        -->
+<!-- This software is provided by the author and contributors ``as is''     -->
+<!-- and any express or implied warranties, including, but not limited to,  -->
+<!-- the implied warranties of merchantability and fitness for a particular -->
+<!-- purpose are disclaimed. In no event shall the author or contributors   -->
+<!-- be liable for any direct, indirect, incidental, special, exemplary,    -->
+<!-- or consequential damages (including, but not limited to, procurement   -->
+<!-- of substitute goods or services; loss of use, data, or profits; or     -->
+<!-- business interruption) however caused and on any theory of liability,  -->
+<!-- whether in contract, strict liability, or tort (including negligence   -->
+<!-- or otherwise) arising in any way out of the use of this software,      -->
+<!-- even if advised of the possibility of such damage.                     -->
+<!--                                                                        -->
+<!--   File: rostra.props                                                   -->
+<!--                                                                        -->
+<!-- Author: $author$                                                       -->
+<!--   Date: 1/31/2019                                                      -->
+<!--========================================================================-->
+<Project
+  ToolsVersion="4.0"
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--===============================================-->
+
+  <PropertyGroup Label="UserMacros">
+      <ROSTRA_GROUP></ROSTRA_GROUP>
+      <ROSTRA_NAME>rostra</ROSTRA_NAME>
+      <ROSTRA_VERSION></ROSTRA_VERSION>
+
+      <ROSTRA_DIR>$(ROSTRA_GROUP)$(ROSTRA_NAME)$(ROSTRA_VERSION)</ROSTRA_DIR>
+      <ROSTRA_SOURCE_DIR>$(SOURCE_ROOT_DIR)/$(ROSTRA_DIR)/src</ROSTRA_SOURCE_DIR>
+      <ROSTRA_BUILD_DIR>$(SOURCE_BUILD_DIR)/$(ROSTRA_DIR)/build</ROSTRA_BUILD_DIR>
+      <ROSTRA_BUILD>$(ROSTRA_BUILD_DIR)/$(PlatformName)/$(VCVersion)/$(Configuration)</ROSTRA_BUILD>
+      <ROSTRA_OBJ>$(ROSTRA_BUILD)/obj/$(ProjectName)</ROSTRA_OBJ>
+      <ROSTRA_LIB>$(ROSTRA_BUILD)/lib</ROSTRA_LIB>
+      <ROSTRA_BIN>$(ROSTRA_BUILD)/bin</ROSTRA_BIN>
+
+      <ROSTRA_DEFINES>WINSOCK_2</ROSTRA_DEFINES>
+      <ROSTRA_DEBUG_DEFINES>$(ROSTRA_DEFINES);DEBUG_BUILD</ROSTRA_DEBUG_DEFINES>
+      <ROSTRA_RELEASE_DEFINES>$(ROSTRA_DEFINES);RELEASE_BUILD</ROSTRA_RELEASE_DEFINES>
+      <ROSTRA_INCLUDE_DIRS>$(ROSTRA_SOURCE_DIR);$(ROSTRA_SOURCE_DIR)/thirdparty/gnu/getopt</ROSTRA_INCLUDE_DIRS>
+      <VC10_ROSTRA_INCLUDE_DIRS>$(ROSTRA_INCLUDE_DIRS)</VC10_ROSTRA_INCLUDE_DIRS>
+      <VC14_ROSTRA_INCLUDE_DIRS>$(ROSTRA_INCLUDE_DIRS)</VC14_ROSTRA_INCLUDE_DIRS>
+      <ROSTRA_LIB_DIRS>$(ROSTRA_LIB)</ROSTRA_LIB_DIRS>
+      <ROSTRA_LIBS>librostra.lib</ROSTRA_LIBS>
+  </PropertyGroup>
+
+  <!--===============================================-->
+
+  <ItemGroup>
+      <BuildMacro Include="ROSTRA_GROUP">
+          <Value>$(ROSTRA_GROUP)</Value>
+      </BuildMacro>
+      <BuildMacro Include="ROSTRA_NAME">
+          <Value>$(ROSTRA_NAME)</Value>
+      </BuildMacro>
+      <BuildMacro Include="ROSTRA_VERSION">
+          <Value>$(ROSTRA_VERSION)</Value>
+      </BuildMacro>
+      
+      <BuildMacro Include="ROSTRA_DIR">
+          <Value>$(ROSTRA_DIR)</Value>
+      </BuildMacro>
+      <BuildMacro Include="ROSTRA_SOURCE_DIR">
+          <Value>$(ROSTRA_SOURCE_DIR)</Value>
+      </BuildMacro>
+      <BuildMacro Include="ROSTRA_BUILD_DIR">
+          <Value>$(ROSTRA_BUILD_DIR)</Value>
+      </BuildMacro>
+      <BuildMacro Include="ROSTRA_BUILD">
+          <Value>$(ROSTRA_BUILD)</Value>
+      </BuildMacro>
+      <BuildMacro Include="ROSTRA_OBJ">
+          <Value>$(ROSTRA_OBJ)</Value>
+      </BuildMacro>
+      <BuildMacro Include="ROSTRA_LIB">
+          <Value>$(ROSTRA_LIB)</Value>
+      </BuildMacro>
+      <BuildMacro Include="ROSTRA_BIN">
+          <Value>$(ROSTRA_BIN)</Value>
+      </BuildMacro>
+      
+      <BuildMacro Include="ROSTRA_DEFINES">
+          <Value>$(ROSTRA_DEFINES)</Value>
+      </BuildMacro>
+      <BuildMacro Include="ROSTRA_DEBUG_DEFINES">
+          <Value>$(ROSTRA_DEBUG_DEFINES)</Value>
+      </BuildMacro>
+      <BuildMacro Include="ROSTRA_RELEASE_DEFINES">
+          <Value>$(ROSTRA_RELEASE_DEFINES)</Value>
+      </BuildMacro>
+      <BuildMacro Include="ROSTRA_INCLUDE_DIRS">
+          <Value>$(ROSTRA_INCLUDE_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="VC10_ROSTRA_INCLUDE_DIRS">
+          <Value>$(VC10_ROSTRA_INCLUDE_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="VC14_ROSTRA_INCLUDE_DIRS">
+          <Value>$(VC14_ROSTRA_INCLUDE_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="ROSTRA_LIB_DIRS">
+          <Value>$(ROSTRA_LIB_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="ROSTRA_LIBS">
+          <Value>$(ROSTRA_LIBS)</Value>
+      </BuildMacro>
+  </ItemGroup>
+
+  <!--===============================================-->
+
+</Project>

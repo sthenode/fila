@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<!--========================================================================-->
+<!-- Copyright (c) 1988-2019 $organization$                                 -->
+<!--                                                                        -->
+<!-- This software is provided by the author and contributors ``as is''     -->
+<!-- and any express or implied warranties, including, but not limited to,  -->
+<!-- the implied warranties of merchantability and fitness for a particular -->
+<!-- purpose are disclaimed. In no event shall the author or contributors   -->
+<!-- be liable for any direct, indirect, incidental, special, exemplary,    -->
+<!-- or consequential damages (including, but not limited to, procurement   -->
+<!-- of substitute goods or services; loss of use, data, or profits; or     -->
+<!-- business interruption) however caused and on any theory of liability,  -->
+<!-- whether in contract, strict liability, or tort (including negligence   -->
+<!-- or otherwise) arising in any way out of the use of this software,      -->
+<!-- even if advised of the possibility of such damage.                     -->
+<!--                                                                        -->
+<!--   File: nadir.props                                                    -->
+<!--                                                                        -->
+<!-- Author: $author$                                                       -->
+<!--   Date: 1/31/2019                                                      -->
+<!--========================================================================-->
+<Project
+  ToolsVersion="4.0"
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--===============================================-->
+
+  <PropertyGroup Label="UserMacros">
+      <NADIR_GROUP></NADIR_GROUP>
+      <NADIR_NAME>nadir</NADIR_NAME>
+      <NADIR_VERSION></NADIR_VERSION>
+
+      <NADIR_DIR>$(NADIR_GROUP)$(NADIR_NAME)$(NADIR_VERSION)</NADIR_DIR>
+      <NADIR_SOURCE_DIR>$(SOURCE_ROOT_DIR)/$(NADIR_DIR)/src</NADIR_SOURCE_DIR>
+      <NADIR_BUILD_DIR>$(SOURCE_BUILD_DIR)/$(NADIR_DIR)/build</NADIR_BUILD_DIR>
+      <NADIR_BUILD>$(NADIR_BUILD_DIR)/$(PlatformName)/$(VCVersion)/$(Configuration)</NADIR_BUILD>
+      <NADIR_OBJ>$(NADIR_BUILD)/obj/$(ProjectName)</NADIR_OBJ>
+      <NADIR_LIB>$(NADIR_BUILD)/lib</NADIR_LIB>
+      <NADIR_BIN>$(NADIR_BUILD)/bin</NADIR_BIN>
+
+      <NADIR_DEFINES></NADIR_DEFINES>
+      <NADIR_DEBUG_DEFINES>$(NADIR_DEFINES);$(ROSTRA_DEBUG_DEFINES)</NADIR_DEBUG_DEFINES>
+      <NADIR_RELEASE_DEFINES>$(NADIR_DEFINES);$(ROSTRA_RELEASE_DEFINES)</NADIR_RELEASE_DEFINES>
+      <NADIR_INCLUDE_DIRS>$(NADIR_SOURCE_DIR)</NADIR_INCLUDE_DIRS>
+      <VC10_NADIR_INCLUDE_DIRS>$(NADIR_INCLUDE_DIRS);$(VC10_ROSTRA_INCLUDE_DIRS)</VC10_NADIR_INCLUDE_DIRS>
+      <VC14_NADIR_INCLUDE_DIRS>$(NADIR_INCLUDE_DIRS);$(VC14_ROSTRA_INCLUDE_DIRS)</VC14_NADIR_INCLUDE_DIRS>
+      <NADIR_LIB_DIRS>$(NADIR_LIB);$(ROSTRA_LIB_DIRS)</NADIR_LIB_DIRS>
+      <NADIR_LIBS>libnadir.lib;$(ROSTRA_LIBS)</NADIR_LIBS>
+  </PropertyGroup>
+
+  <!--===============================================-->
+
+  <ItemGroup>
+      <BuildMacro Include="NADIR_GROUP">
+          <Value>$(NADIR_GROUP)</Value>
+      </BuildMacro>
+      <BuildMacro Include="NADIR_NAME">
+          <Value>$(NADIR_NAME)</Value>
+      </BuildMacro>
+      <BuildMacro Include="NADIR_VERSION">
+          <Value>$(NADIR_VERSION)</Value>
+      </BuildMacro>
+      
+      <BuildMacro Include="NADIR_DIR">
+          <Value>$(NADIR_DIR)</Value>
+      </BuildMacro>
+      <BuildMacro Include="NADIR_SOURCE_DIR">
+          <Value>$(NADIR_SOURCE_DIR)</Value>
+      </BuildMacro>
+      <BuildMacro Include="NADIR_BUILD_DIR">
+          <Value>$(NADIR_BUILD_DIR)</Value>
+      </BuildMacro>
+      <BuildMacro Include="NADIR_BUILD">
+          <Value>$(NADIR_BUILD)</Value>
+      </BuildMacro>
+      <BuildMacro Include="NADIR_OBJ">
+          <Value>$(NADIR_OBJ)</Value>
+      </BuildMacro>
+      <BuildMacro Include="NADIR_LIB">
+          <Value>$(NADIR_LIB)</Value>
+      </BuildMacro>
+      <BuildMacro Include="NADIR_BIN">
+          <Value>$(NADIR_BIN)</Value>
+      </BuildMacro>
+      
+      <BuildMacro Include="NADIR_DEFINES">
+          <Value>$(NADIR_DEFINES)</Value>
+      </BuildMacro>
+      <BuildMacro Include="NADIR_DEBUG_DEFINES">
+          <Value>$(NADIR_DEBUG_DEFINES)</Value>
+      </BuildMacro>
+      <BuildMacro Include="NADIR_RELEASE_DEFINES">
+          <Value>$(NADIR_RELEASE_DEFINES)</Value>
+      </BuildMacro>
+      <BuildMacro Include="NADIR_INCLUDE_DIRS">
+          <Value>$(NADIR_INCLUDE_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="VC10_NADIR_INCLUDE_DIRS">
+          <Value>$(VC10_NADIR_INCLUDE_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="VC14_NADIR_INCLUDE_DIRS">
+          <Value>$(VC14_NADIR_INCLUDE_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="NADIR_LIB_DIRS">
+          <Value>$(NADIR_LIB_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="NADIR_LIBS">
+          <Value>$(NADIR_LIBS)</Value>
+      </BuildMacro>
+  </ItemGroup>
+
+  <!--===============================================-->
+
+</Project>

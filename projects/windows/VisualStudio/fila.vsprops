@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<!--========================================================================-->
+<!-- Copyright (c) 1988-2019 $organization$                                 -->
+<!--                                                                        -->
+<!-- This software is provided by the author and contributors ``as is''     -->
+<!-- and any express or implied warranties, including, but not limited to,  -->
+<!-- the implied warranties of merchantability and fitness for a particular -->
+<!-- purpose are disclaimed. In no event shall the author or contributors   -->
+<!-- be liable for any direct, indirect, incidental, special, exemplary,    -->
+<!-- or consequential damages (including, but not limited to, procurement   -->
+<!-- of substitute goods or services; loss of use, data, or profits; or     -->
+<!-- business interruption) however caused and on any theory of liability,  -->
+<!-- whether in contract, strict liability, or tort (including negligence   -->
+<!-- or otherwise) arising in any way out of the use of this software,      -->
+<!-- even if advised of the possibility of such damage.                     -->
+<!--                                                                        -->
+<!--   File: fila.vsprops                                                   -->
+<!--                                                                        -->
+<!-- Author: $author$                                                       -->
+<!--   Date: 1/31/2019                                                      -->
+<!--========================================================================-->
+<VisualStudioPropertySheet
+    ProjectType="Visual C++"
+    Version="8.00"
+    Name="fila">
+
+    <!--===============================================-->
+
+    <UserMacro
+        Name="FILA_GROUP"
+        Value=""
+    />
+    <UserMacro
+        Name="FILA_NAME"
+        Value="fila"
+    />
+    <UserMacro
+        Name="FILA_VERSION"
+        Value=""
+    />
+
+    <!--===============================================-->
+
+    <UserMacro
+        Name="FILA_DIR"
+        Value="$(FILA_GROUP)$(FILA_NAME)$(FILA_VERSION)"
+    />
+    <UserMacro
+        Name="FILA_SOURCE_DIR"
+        Value="$(SOURCE_ROOT_DIR)/$(FILA_DIR)/src"
+    />
+    <UserMacro
+        Name="FILA_BUILD_DIR"
+        Value="$(SOURCE_BUILD_DIR)/$(FILA_DIR)/build"
+    />
+
+    <!--===============================================-->
+
+    <UserMacro
+        Name="FILA_BUILD"
+        Value="$(FILA_BUILD_DIR)/$(PlatformName)/$(VCVersion)/$(ConfigurationName)"
+    />
+    <UserMacro
+        Name="FILA_OBJ"
+        Value="$(FILA_BUILD)/obj/$(ProjectName)"
+    />
+    <UserMacro
+        Name="FILA_LIB"
+        Value="$(FILA_BUILD)/lib"
+    />
+    <UserMacro
+        Name="FILA_BIN"
+        Value="$(FILA_BUILD)/bin"
+    />
+
+    <!--===============================================-->
+
+    <UserMacro
+        Name="FILA_DEFINES"
+        Value=""
+    />
+    <UserMacro
+        Name="FILA_DEBUG_DEFINES"
+        Value="$(FILA_DEFINES);$(CRONO_DEBUG_DEFINES)"
+    />
+    <UserMacro
+        Name="FILA_RELEASE_DEFINES"
+        Value="$(FILA_DEFINES);$(CRONO_RELEASE_DEFINES)"
+    />
+
+    <!--===============================================-->
+  
+    <UserMacro
+        Name="FILA_INCLUDE_DIRS"
+        Value="$(FILA_SOURCE_DIR);$(CRONO_INCLUDE_DIRS)"
+    />
+    <UserMacro
+        Name="FILA_LIB_DIRS"
+        Value="$(FILA_LIB);$(CRONO_LIB_DIRS)"
+    />
+    <UserMacro
+        Name="FILA_LIBS"
+        Value="libfila.lib $(CRONO_LIBS)"
+    />
+
+    <!--===============================================-->
+
+</VisualStudioPropertySheet>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<!--========================================================================-->
+<!-- Copyright (c) 1988-2019 $organization$                                 -->
+<!--                                                                        -->
+<!-- This software is provided by the author and contributors ``as is''     -->
+<!-- and any express or implied warranties, including, but not limited to,  -->
+<!-- the implied warranties of merchantability and fitness for a particular -->
+<!-- purpose are disclaimed. In no event shall the author or contributors   -->
+<!-- be liable for any direct, indirect, incidental, special, exemplary,    -->
+<!-- or consequential damages (including, but not limited to, procurement   -->
+<!-- of substitute goods or services; loss of use, data, or profits; or     -->
+<!-- business interruption) however caused and on any theory of liability,  -->
+<!-- whether in contract, strict liability, or tort (including negligence   -->
+<!-- or otherwise) arising in any way out of the use of this software,      -->
+<!-- even if advised of the possibility of such damage.                     -->
+<!--                                                                        -->
+<!--   File: crono.props                                                    -->
+<!--                                                                        -->
+<!-- Author: $author$                                                       -->
+<!--   Date: 1/31/2019                                                      -->
+<!--========================================================================-->
+<Project
+  ToolsVersion="4.0"
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--===============================================-->
+
+  <PropertyGroup Label="UserMacros">
+      <CRONO_GROUP></CRONO_GROUP>
+      <CRONO_NAME>crono</CRONO_NAME>
+      <CRONO_VERSION></CRONO_VERSION>
+
+      <CRONO_DIR>$(CRONO_GROUP)$(CRONO_NAME)$(CRONO_VERSION)</CRONO_DIR>
+      <CRONO_SOURCE_DIR>$(SOURCE_ROOT_DIR)/$(CRONO_DIR)/src</CRONO_SOURCE_DIR>
+      <CRONO_BUILD_DIR>$(SOURCE_BUILD_DIR)/$(CRONO_DIR)/build</CRONO_BUILD_DIR>
+      <CRONO_BUILD>$(CRONO_BUILD_DIR)/$(PlatformName)/$(VCVersion)/$(Configuration)</CRONO_BUILD>
+      <CRONO_OBJ>$(CRONO_BUILD)/obj/$(ProjectName)</CRONO_OBJ>
+      <CRONO_LIB>$(CRONO_BUILD)/lib</CRONO_LIB>
+      <CRONO_BIN>$(CRONO_BUILD)/bin</CRONO_BIN>
+
+      <CRONO_DEFINES></CRONO_DEFINES>
+      <CRONO_DEBUG_DEFINES>$(CRONO_DEFINES);$(FILA_DEBUG_DEFINES)</CRONO_DEBUG_DEFINES>
+      <CRONO_RELEASE_DEFINES>$(CRONO_DEFINES);$(FILA_RELEASE_DEFINES)</CRONO_RELEASE_DEFINES>
+      <CRONO_INCLUDE_DIRS>$(CRONO_SOURCE_DIR)</CRONO_INCLUDE_DIRS>
+      <VC10_CRONO_INCLUDE_DIRS>$(CRONO_INCLUDE_DIRS);$(VC10_FILA_INCLUDE_DIRS)</VC10_CRONO_INCLUDE_DIRS>
+      <VC14_CRONO_INCLUDE_DIRS>$(CRONO_INCLUDE_DIRS);$(VC14_FILA_INCLUDE_DIRS)</VC14_CRONO_INCLUDE_DIRS>
+      <CRONO_LIB_DIRS>$(CRONO_LIB);$(FILA_LIB_DIRS)</CRONO_LIB_DIRS>
+      <CRONO_LIBS>libcrono.lib;$(FILA_LIBS)</CRONO_LIBS>
+  </PropertyGroup>
+
+  <!--===============================================-->
+
+  <ItemGroup>
+      <BuildMacro Include="CRONO_GROUP">
+          <Value>$(CRONO_GROUP)</Value>
+      </BuildMacro>
+      <BuildMacro Include="CRONO_NAME">
+          <Value>$(CRONO_NAME)</Value>
+      </BuildMacro>
+      <BuildMacro Include="CRONO_VERSION">
+          <Value>$(CRONO_VERSION)</Value>
+      </BuildMacro>
+      
+      <BuildMacro Include="CRONO_DIR">
+          <Value>$(CRONO_DIR)</Value>
+      </BuildMacro>
+      <BuildMacro Include="CRONO_SOURCE_DIR">
+          <Value>$(CRONO_SOURCE_DIR)</Value>
+      </BuildMacro>
+      <BuildMacro Include="CRONO_BUILD_DIR">
+          <Value>$(CRONO_BUILD_DIR)</Value>
+      </BuildMacro>
+      <BuildMacro Include="CRONO_BUILD">
+          <Value>$(CRONO_BUILD)</Value>
+      </BuildMacro>
+      <BuildMacro Include="CRONO_OBJ">
+          <Value>$(CRONO_OBJ)</Value>
+      </BuildMacro>
+      <BuildMacro Include="CRONO_LIB">
+          <Value>$(CRONO_LIB)</Value>
+      </BuildMacro>
+      <BuildMacro Include="CRONO_BIN">
+          <Value>$(CRONO_BIN)</Value>
+      </BuildMacro>
+      
+      <BuildMacro Include="CRONO_DEFINES">
+          <Value>$(CRONO_DEFINES)</Value>
+      </BuildMacro>
+      <BuildMacro Include="CRONO_DEBUG_DEFINES">
+          <Value>$(CRONO_DEBUG_DEFINES)</Value>
+      </BuildMacro>
+      <BuildMacro Include="CRONO_RELEASE_DEFINES">
+          <Value>$(CRONO_RELEASE_DEFINES)</Value>
+      </BuildMacro>
+      <BuildMacro Include="CRONO_INCLUDE_DIRS">
+          <Value>$(CRONO_INCLUDE_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="VC10_CRONO_INCLUDE_DIRS">
+          <Value>$(VC10_CRONO_INCLUDE_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="VC14_CRONO_INCLUDE_DIRS">
+          <Value>$(VC14_CRONO_INCLUDE_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="CRONO_LIB_DIRS">
+          <Value>$(CRONO_LIB_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="CRONO_LIBS">
+          <Value>$(CRONO_LIBS)</Value>
+      </BuildMacro>
+  </ItemGroup>
+
+  <!--===============================================-->
+
+</Project>

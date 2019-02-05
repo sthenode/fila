@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<!--========================================================================-->
+<!-- Copyright (c) 1988-2019 $organization$                                 -->
+<!--                                                                        -->
+<!-- This software is provided by the author and contributors ``as is''     -->
+<!-- and any express or implied warranties, including, but not limited to,  -->
+<!-- the implied warranties of merchantability and fitness for a particular -->
+<!-- purpose are disclaimed. In no event shall the author or contributors   -->
+<!-- be liable for any direct, indirect, incidental, special, exemplary,    -->
+<!-- or consequential damages (including, but not limited to, procurement   -->
+<!-- of substitute goods or services; loss of use, data, or profits; or     -->
+<!-- business interruption) however caused and on any theory of liability,  -->
+<!-- whether in contract, strict liability, or tort (including negligence   -->
+<!-- or otherwise) arising in any way out of the use of this software,      -->
+<!-- even if advised of the possibility of such damage.                     -->
+<!--                                                                        -->
+<!--   File: fila.props                                                     -->
+<!--                                                                        -->
+<!-- Author: $author$                                                       -->
+<!--   Date: 1/31/2019                                                      -->
+<!--========================================================================-->
+<Project
+  ToolsVersion="4.0"
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--===============================================-->
+
+  <PropertyGroup Label="UserMacros">
+      <FILA_GROUP></FILA_GROUP>
+      <FILA_NAME>fila</FILA_NAME>
+      <FILA_VERSION></FILA_VERSION>
+
+      <FILA_DIR>$(FILA_GROUP)$(FILA_NAME)$(FILA_VERSION)</FILA_DIR>
+      <FILA_SOURCE_DIR>$(SOURCE_ROOT_DIR)/$(FILA_DIR)/src</FILA_SOURCE_DIR>
+      <FILA_BUILD_DIR>$(SOURCE_BUILD_DIR)/$(FILA_DIR)/build</FILA_BUILD_DIR>
+      <FILA_BUILD>$(FILA_BUILD_DIR)/$(PlatformName)/$(VCVersion)/$(Configuration)</FILA_BUILD>
+      <FILA_OBJ>$(FILA_BUILD)/obj/$(ProjectName)</FILA_OBJ>
+      <FILA_LIB>$(FILA_BUILD)/lib</FILA_LIB>
+      <FILA_BIN>$(FILA_BUILD)/bin</FILA_BIN>
+
+      <FILA_DEFINES></FILA_DEFINES>
+      <FILA_DEBUG_DEFINES>$(FILA_DEFINES);$(NADIR_DEBUG_DEFINES)</FILA_DEBUG_DEFINES>
+      <FILA_RELEASE_DEFINES>$(FILA_DEFINES);$(NADIR_RELEASE_DEFINES)</FILA_RELEASE_DEFINES>
+      <FILA_INCLUDE_DIRS>$(FILA_SOURCE_DIR)</FILA_INCLUDE_DIRS>
+      <VC10_FILA_INCLUDE_DIRS>$(FILA_INCLUDE_DIRS);$(VC10_NADIR_INCLUDE_DIRS)</VC10_FILA_INCLUDE_DIRS>
+      <VC14_FILA_INCLUDE_DIRS>$(FILA_INCLUDE_DIRS);$(VC14_NADIR_INCLUDE_DIRS)</VC14_FILA_INCLUDE_DIRS>
+      <FILA_LIB_DIRS>$(FILA_LIB);$(NADIR_LIB_DIRS)</FILA_LIB_DIRS>
+      <FILA_LIBS>libfila.lib;$(NADIR_LIBS)</FILA_LIBS>
+  </PropertyGroup>
+
+  <!--===============================================-->
+
+  <ItemGroup>
+      <BuildMacro Include="FILA_GROUP">
+          <Value>$(FILA_GROUP)</Value>
+      </BuildMacro>
+      <BuildMacro Include="FILA_NAME">
+          <Value>$(FILA_NAME)</Value>
+      </BuildMacro>
+      <BuildMacro Include="FILA_VERSION">
+          <Value>$(FILA_VERSION)</Value>
+      </BuildMacro>
+      
+      <BuildMacro Include="FILA_DIR">
+          <Value>$(FILA_DIR)</Value>
+      </BuildMacro>
+      <BuildMacro Include="FILA_SOURCE_DIR">
+          <Value>$(FILA_SOURCE_DIR)</Value>
+      </BuildMacro>
+      <BuildMacro Include="FILA_BUILD_DIR">
+          <Value>$(FILA_BUILD_DIR)</Value>
+      </BuildMacro>
+      <BuildMacro Include="FILA_BUILD">
+          <Value>$(FILA_BUILD)</Value>
+      </BuildMacro>
+      <BuildMacro Include="FILA_OBJ">
+          <Value>$(FILA_OBJ)</Value>
+      </BuildMacro>
+      <BuildMacro Include="FILA_LIB">
+          <Value>$(FILA_LIB)</Value>
+      </BuildMacro>
+      <BuildMacro Include="FILA_BIN">
+          <Value>$(FILA_BIN)</Value>
+      </BuildMacro>
+      
+      <BuildMacro Include="FILA_DEFINES">
+          <Value>$(FILA_DEFINES)</Value>
+      </BuildMacro>
+      <BuildMacro Include="FILA_DEBUG_DEFINES">
+          <Value>$(FILA_DEBUG_DEFINES)</Value>
+      </BuildMacro>
+      <BuildMacro Include="FILA_RELEASE_DEFINES">
+          <Value>$(FILA_RELEASE_DEFINES)</Value>
+      </BuildMacro>
+      <BuildMacro Include="FILA_INCLUDE_DIRS">
+          <Value>$(FILA_INCLUDE_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="VC10_FILA_INCLUDE_DIRS">
+          <Value>$(VC10_FILA_INCLUDE_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="VC14_FILA_INCLUDE_DIRS">
+          <Value>$(VC14_FILA_INCLUDE_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="FILA_LIB_DIRS">
+          <Value>$(FILA_LIB_DIRS)</Value>
+      </BuildMacro>
+      <BuildMacro Include="FILA_LIBS">
+          <Value>$(FILA_LIBS)</Value>
+      </BuildMacro>
+  </ItemGroup>
+
+  <!--===============================================-->
+
+</Project>

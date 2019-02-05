@@ -72,7 +72,6 @@ $${NADIR_SRC}/xos/base/acquired.cpp \
 $${NADIR_SRC}/xos/base/waited.cpp \
 $${FILA_SRC}/xos/mt/os/os.cpp \
 $${FILA_SRC}/xos/mt/posix/mutex.cpp \
-$${FILA_SRC}/xos/console/main_main.cpp \
 $${FILA_SRC}/xos/app/console/fila/main.cpp \
 
 ########################################################################
