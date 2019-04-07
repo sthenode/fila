@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-/// Copyright (c) 1988-2018 $organization$
+/// Copyright (c) 1988-2019 $organization$
 ///
 /// This software is provided by the author and contributors ``as is'' 
 /// and any express or implied warranties, including, but not limited to, 
@@ -13,52 +13,21 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: os.hpp
+///   File: os.cpp
 ///
 /// Author: $author$
-///   Date: 4/11/2018
+///   Date: 2/6/2019
 ///////////////////////////////////////////////////////////////////////
-#ifndef _XOS_MT_OS_OS_HPP
-#define _XOS_MT_OS_OS_HPP
-
-#include "xos/platform/platform_build.h"
-
-#if defined(WINDOWS)
-#include "xos/mt/microsoft/windows/os.hpp"
-#elif defined(MACOSX)
 #include "xos/mt/apple/osx/os.hpp"
-#elif defined(APPIOS)
-#include "xos/mt/apple/ios/os.hpp"
-#elif defined(LINUX)
-#include "xos/mt/linux/os.hpp"
-#else /// defined(WINDOWS)
-#include "xos/mt/posix/os.hpp"
-#endif /// defined(WINDOWS)
 
 namespace xos {
 namespace mt {
-namespace microsoft { namespace windows { namespace crt {} } }
-namespace apple { namespace osx {} namespace ios {} namespace mach {} }
-namespace linux {}
-namespace posix {}
-namespace os {
+namespace apple {
+namespace osx {
 
-#if defined(WINDOWS)
-namespace os = microsoft::windows;
-#elif defined(MACOSX)
-namespace os = apple::osx;
-#elif defined(APPIOS)
-namespace os = apple::ios;
-#elif defined(LINUX)
-namespace os = linux;
-#else /// defined(WINDOWS)
-namespace os = posix;
-#endif /// defined(WINDOWS)
 
-} /// namespace os
+} /// namespace osx
+} /// namespace apple
 } /// namespace mt
 } /// namespace xos
-
-#endif /// _XOS_MT_OS_OS_HPP 
-        
 

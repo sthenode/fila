@@ -21,8 +21,6 @@
 #ifndef _XOS_MT_APPLE_MACH_SEMAPHORE_HPP
 #define _XOS_MT_APPLE_MACH_SEMAPHORE_HPP
 
-// /source/experimental/fila/cpp/nadir/src/xos/mt/apple/mach/semaphore.hpp
-
 #include <mach/task.h>
 #include <mach/mach.h>
 #include <mach/semaphore.h>
