@@ -76,8 +76,14 @@ ${fila_USRLIBDIRS} \
 #
 # Executable .cpp sources
 #
-#fila_exe_EXE_CPP_SOURCES += \
-#${FILA_SRC}/fila/base/Base.cpp \
+fila_exe_EXE_CPP_SOURCES += \
+${NADIR_SRC}/xos/base/logged.cpp \
+${NADIR_SRC}/xos/base/locked.cpp \
+${NADIR_SRC}/xos/base/acquired.cpp \
+${NADIR_SRC}/xos/base/waited.cpp \
+${FILA_SRC}/xos/mt/os/os.cpp \
+${FILA_SRC}/xos/mt/posix/mutex.cpp \
+${FILA_SRC}/xos/app/console/fila/main.cpp \
 
 #
 # Executable .m sources
