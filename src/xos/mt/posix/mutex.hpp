@@ -28,14 +28,60 @@
 #include <time.h>
 #include <errno.h>
 
+#if !defined(HAS_POSIX_TIMEOUTS)
 #if defined(_POSIX_TIMEOUTS) && (_POSIX_TIMEOUTS >=0 )
-#define PTHREAD_MUTEX_HAS_TIMEDLOCK
-#else /// defined(_POSIX_TIMEOUTS) && (_POSIX_TIMEOUTS >=0 )
-#define PTHREAD_MUTEX_HAS_TIMEDLOCK
-#if !defined(pthread_mutex_timedlock)
-#define pthread_mutex_timedlock(m, t) EINVAL
-#endif /// !defined(pthread_mutex_timedlock)
+#define HAS_POSIX_TIMEOUTS
 #endif /// defined(_POSIX_TIMEOUTS) && (_POSIX_TIMEOUTS >=0 )
+#endif /// !defined(HAS_POSIX_TIMEOUTS)
+
+#if defined(HAS_POSIX_TIMEOUTS)
+#if !defined(PTHREAD_MUTEX_HAS_TIMEDLOCK)
+#define PTHREAD_MUTEX_HAS_TIMEDLOCK
+#endif /// !defined(PTHREAD_MUTEX_HAS_TIMEDLOCK)
+#endif /// defined(HAS_POSIX_TIMEOUTS)
+
+#if !defined(PTHREAD_MUTEX_HAS_TIMEDLOCK)
+inline int pthread_mutex_timedlock(pthread_mutex_t *mutex, const struct timespec *abs_timeout) {
+    if ((mutex) && (abs_timeout)) {
+        int err = 0; struct timespec abs_time;
+        if (!(err = ::clock_gettime(CLOCK_REALTIME, &abs_time))) {
+            useconds_t time_useconds = ::xos::seconds_useconds(abs_time.tv_sec) + ::xos::nseconds_useconds(abs_time.tv_nsec),
+                       timeout_useconds = ::xos::seconds_useconds(abs_timeout->tv_sec) + ::xos::nseconds_useconds(abs_timeout->tv_nsec);
+            if (timeout_useconds > time_useconds) {
+                int err = 0;            
+                for (useconds_t useconds_sleep = ::xos::mseconds_useconds(10);
+                     timeout_useconds > time_useconds; time_useconds += useconds_sleep) {
+                    if (EBUSY != (err = ::pthread_mutex_trylock(mutex))) {
+                        return err;
+                    }
+                    ::usleep(useconds_sleep);
+                }
+            }
+            return ETIMEDOUT;
+        }
+    }
+    return EINVAL; 
+}
+#define PTHREAD_MUTEX_HAS_TIMEDLOCK
+#endif /// !defined(PTHREAD_MUTEX_HAS_TIMEDLOCK)
+
+#if !defined(PTHREAD_MUTEX_HAS_TIMEDLOCK_RELATIVE_NP)
+inline int pthread_mutex_timedlock_relative_np(pthread_mutex_t *mutex, const struct timespec *timeout) {
+#if defined(PTHREAD_MUTEX_HAS_TIMEDLOCK)
+    if ((mutex) && (timeout)) {
+        int err = 0; struct timespec until_time;
+        if (!(err = ::clock_gettime(CLOCK_REALTIME, &until_time))) {
+            until_time.tv_sec +=  timeout->tv_sec;
+            until_time.tv_nsec +=  timeout->tv_nsec;
+            err = ::pthread_mutex_timedlock(mutex, &until_time);
+        }
+        return err;
+    }
+#endif /// defined(PTHREAD_MUTEX_HAS_TIMEDLOCK)
+    return EINVAL;
+}
+#define PTHREAD_MUTEX_HAS_TIMEDLOCK_RELATIVE_NP
+#endif /// !defined(PTHREAD_MUTEX_HAS_TIMEDLOCK_RELATIVE_NP)
 
 namespace xos {
 namespace mt {
@@ -60,54 +106,45 @@ public:
     typedef typename extends::unattached_t unattached_t;
     enum { unattached = extends::unattached };
     
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    mutext(attached_t detached, bool is_created, bool is_logged, bool is_err_logged): extends(detached, is_created, is_logged, is_err_logged) {
+    }
+    mutext(attached_t detached, bool is_created, bool is_logged): extends(detached, is_created, is_logged) {
+    }
     mutext(attached_t detached, bool is_created): extends(detached, is_created) {
     }
     mutext(attached_t detached): extends(detached) {
     }
     mutext(bool is_logged, bool is_err_logged): extends(is_logged, is_err_logged) {
-        IS_ERR_LOGGED_DEBUG("this->created()...");
-        if (!(this->created())) {
-            const create_exception e(create_failed);
-            IS_ERR_LOGGED_ERROR("...failed on this->created() throw (const create_exception e(create_failed))...");
-            throw (e);
-        }
+        XOS_MT_MUTEX_CREATED();
     }
     mutext(bool is_logged): extends(is_logged) {
-        IS_ERR_LOGGED_DEBUG("this->created()...");
-        if (!(this->created())) {
-            const create_exception e(create_failed);
-            IS_ERR_LOGGED_ERROR("...failed on this->created() throw (const create_exception e(create_failed))...");
-            throw (e);
-        }
+        XOS_MT_MUTEX_CREATED();
     }
     mutext(const mutext &copy): extends(copy) {
     }
     mutext() {
-        IS_ERR_LOGGED_DEBUG("this->created()...");
-        if (!(this->created())) {
-            const create_exception e(create_failed);
-            IS_ERR_LOGGED_ERROR("...failed on this->created() throw (const create_exception e(create_failed))...");
-            throw (e);
-        }
+        XOS_MT_MUTEX_CREATED();
     }
     virtual ~mutext() {
-        IS_ERR_LOGGED_DEBUG("this->destroyed()...");
-        if (!(this->destroyed())) {
-            const create_exception e(destroy_failed);
-            IS_ERR_LOGGED_ERROR("...failed on this->destroyed() throw (const create_exception e(destroy_failed))...");
-            throw (e);
-        }
+        XOS_MT_MUTEX_DESTROYED();
     }
 
-    virtual bool create() {
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    virtual bool create(bool initially_locked) {
         if ((this->destroyed())) {
             attached_t detached = 0;
-            if ((detached = this->create_detached(mutex_))) {
+            if ((detached = this->create_detached(mutex_, initially_locked))) {
                 this->attach_created(detached);
                 return true;
             }
         }
         return false;
+    }
+    virtual bool create() {
+        return create(false);
     }
     virtual bool destroy() {
         attached_t detached = 0;
@@ -119,6 +156,8 @@ public:
         return false;
     }
 
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     virtual bool lock() {
         return lock_success == untimed_lock();
     }
@@ -135,7 +174,6 @@ public:
         }
         return false;
     }
-
     virtual lock_status try_lock() {
         attached_t detached = 0;
         if ((detached = this->attached_to())) {
@@ -145,15 +183,20 @@ public:
                 IS_LOGGED_TRACE("...pthread_mutex_trylock(detached)");
                 return lock_success;
             } else {
-                if (ETIMEDOUT != (err)) {
-                    if (EINTR != (err)) {
-                        IS_LOGGED_ERROR("...failed err = " << err << " on pthread_mutex_trylock(detached)");
+                if (EBUSY != (err)) {
+                    if (ETIMEDOUT != (err)) {
+                        if (EINTR != (err)) {
+                            IS_LOGGED_ERROR("...failed err = " << err << " on pthread_mutex_trylock(detached)");
+                        } else {
+                            IS_LOGGED_ERROR("...failed EINTR err = " << err << " on pthread_mutex_trylock(detached)");
+                            return lock_interrupted;
+                        }
                     } else {
-                        IS_LOGGED_ERROR("...failed EINTR err = " << err << " on pthread_mutex_trylock(detached)");
-                        return lock_interrupted;
+                        IS_LOGGED_TRACE("...failed ETIMEDOUT err = " << err << " on pthread_mutex_trylock(detached)");
+                        return lock_busy;
                     }
                 } else {
-                    IS_LOGGED_TRACE("...failed ETIMEDOUT err = " << err << " on pthread_mutex_trylock(detached)");
+                    IS_LOGGED_TRACE("...failed EBUSY err = " << err << " on pthread_mutex_trylock(detached)");
                     return lock_busy;
                 }
             }
@@ -188,34 +231,27 @@ public:
             attached_t detached = 0;
             if ((detached = this->attached_to())) {
                 struct timespec until_time = timed_until_time(milliseconds);
+                bool debug = this->is_logged_debug(milliseconds), logged = this->is_logged(), err_logged = this->is_err_logged();
                 int err = 0;
-
-                if (500 > milliseconds) {
-                    IS_LOGGED_TRACE("pthread_mutex_timedlock(detached, &until_time)...");
-                } else {
-                    IS_LOGGED_DEBUG("pthread_mutex_timedlock(detached, &until_time)...");
-                }
+                IF_ERR_LOGGED_DEBUG_TRACE(debug, logged, err_logged, "pthread_mutex_timedlock(detached, &until_time)...");
                 if (!(err = pthread_mutex_timedlock(detached, &until_time))) {
-                    if (500 > milliseconds) {
-                        IS_LOGGED_TRACE("...pthread_mutex_timedlock(detached, &until_time)");
-                    } else {
-                        IS_LOGGED_DEBUG("...pthread_mutex_timedlock(detached, &until_time)");
-                    }
+                    IF_ERR_LOGGED_DEBUG_TRACE(debug, logged, err_logged, "...pthread_mutex_timedlock(detached, &until_time)");
                     return lock_success;
                 } else {
-                    if (ETIMEDOUT != (err)) {
-                        if (EINTR != (err)) {
-                            IS_LOGGED_ERROR("...failed err = " << err << " on pthread_mutex_timedlock(detached, &until_time)");
+                    if (EBUSY != (err)) {
+                        if (ETIMEDOUT != (err)) {
+                            if (EINTR != (err)) {
+                                IS_LOGGED_ERROR("...failed err = " << err << " on pthread_mutex_timedlock(detached, &until_time)");
+                            } else {
+                                IS_LOGGED_ERROR("...failed EINTR err = " << err << " on pthread_mutex_timedlock(detached, &until_time)");
+                                return lock_interrupted;
+                            }
                         } else {
-                            IS_LOGGED_ERROR("...failed EINTR err = " << err << " on pthread_mutex_timedlock(detached, &until_time)");
-                            return lock_interrupted;
+                            IF_ERR_LOGGED_DEBUG_TRACE(debug, logged, err_logged, "...failed ETIMEDOUT err = " << err << " on pthread_mutex_timedlock(detached, &until_time)");
+                            return lock_busy;
                         }
                     } else {
-                        if (500 > milliseconds) {
-                            IS_LOGGED_TRACE("...failed ETIMEDOUT err = " << err << " on pthread_mutex_timedlock(detached, &until_time)");
-                        } else {
-                            IS_LOGGED_DEBUG("...failed ETIMEDOUT err = " << err << " on pthread_mutex_timedlock(detached, &until_time)");
-                        }
+                        IF_ERR_LOGGED_DEBUG_TRACE(debug, logged, err_logged, "...failed EBUSY err = " << err << " on pthread_mutex_timedlock(detached, &until_time)");
                         return lock_busy;
                     }
                 }
@@ -232,7 +268,9 @@ public:
         return status;
     }
 
-    virtual attached_t create_detached(mutex_t& mutex) const {
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    virtual attached_t create_detached(mutex_t& mutex, bool initially_locked) const {
         int err = 0;
         mutexattr_t mutexattr;
         IS_ERR_LOGGED_DEBUG("pthread_mutexattr_init(&mutexattr)...");
@@ -272,6 +310,8 @@ public:
         return success;
     }
 
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 protected:
     mutex_t mutex_;
 };

@@ -26,6 +26,24 @@
 #include "xos/base/created.hpp"
 #include "xos/io/logger.hpp"
 
+#define XOS_MT_SEMAPHORE_CREATED() \
+    IS_ERR_LOGGED_DEBUG("this->created()...");\
+    if (!(this->created())) {\
+        IS_ERR_LOGGED_ERROR("...failed on this->created() throw (create_exception(create_failed))...");\
+        throw (create_exception(create_failed));\
+    } else {\
+        IS_ERR_LOGGED_DEBUG("...this->created()");\
+    }
+    
+#define XOS_MT_SEMAPHORE_DESTROYED() \
+    IS_ERR_LOGGED_DEBUG("this->destroyed()...");\
+    if (!(this->destroyed())) {\
+        IS_ERR_LOGGED_ERROR("...failed on this->destroyed() throw (create_exception(destroy_failed))...");\
+        throw (create_exception(destroy_failed));\
+    } else {\
+        IS_ERR_LOGGED_DEBUG("...this->destroyed()");\
+    }
+
 namespace xos {
 namespace mt {
 
@@ -65,6 +83,16 @@ public:
     typedef TUnattached unattached_t;
     enum { unattached = VUnattached };
     
+    semaphoret(attached_t detached, bool is_created, bool is_logged, bool is_err_logged)
+    : extends(detached, is_created) {
+        this->set_is_logged(is_logged);
+        this->set_is_err_logged(is_err_logged);
+    }
+    semaphoret(attached_t detached, bool is_created, bool is_logged)
+    : extends(detached, is_created) {
+        this->set_is_logged(is_logged);
+        this->set_is_err_logged(is_logged);
+    }
     semaphoret(attached_t detached, bool is_created)
     : extends(detached, is_created) {
     }
@@ -84,11 +112,7 @@ public:
     semaphoret() {
     }
     virtual ~semaphoret() {
-        IS_ERR_LOGGED_DEBUG("this->destroyed()...");
-        if (!(this->destroyed())) {
-            IS_ERR_LOGGED_ERROR("...failed on this->destroyed() throw (create_exception(destroy_failed))...");
-            throw (create_exception(destroy_failed));
-        }
+        XOS_MT_SEMAPHORE_DESTROYED();
     }
 
 };
@@ -111,39 +135,27 @@ public:
     typedef typename extends::unattached_t unattached_t;
     enum { unattached = extends::unattached };
     
+    semaphoret(attached_t detached, bool is_created, bool is_logged, bool is_err_logged): extends(detached, is_created, is_logged, is_err_logged) {
+    }
+    semaphoret(attached_t detached, bool is_created, bool is_logged): extends(detached, is_created, is_logged) {
+    }
     semaphoret(attached_t detached, bool is_created): extends(detached, is_created) {
     }
     semaphoret(attached_t detached): extends(detached) {
     }
     semaphoret(bool is_logged, bool is_err_logged): extends(is_logged, is_err_logged) {
-        IS_ERR_LOGGED_DEBUG("this->created()...");
-        if (!(this->created())) {
-            IS_ERR_LOGGED_ERROR("...failed on this->created() throw (create_exception(create_failed))...");
-            throw (create_exception(create_failed));
-        }
+        XOS_MT_SEMAPHORE_CREATED();
     }
     semaphoret(bool is_logged): extends(is_logged) {
-        IS_ERR_LOGGED_DEBUG("this->created()...");
-        if (!(this->created())) {
-            IS_ERR_LOGGED_ERROR("...failed on this->created() throw (create_exception(create_failed))...");
-            throw (create_exception(create_failed));
-        }
+        XOS_MT_SEMAPHORE_CREATED();
     }
     semaphoret(const semaphoret &copy): extends(copy) {
     }
     semaphoret() {
-        IS_ERR_LOGGED_DEBUG("this->created()...");
-        if (!(this->created())) {
-            IS_ERR_LOGGED_ERROR("...failed on this->created() throw (create_exception(create_failed))...");
-            throw (create_exception(create_failed));
-        }
+        XOS_MT_SEMAPHORE_CREATED();
     }
     virtual ~semaphoret() {
-        IS_ERR_LOGGED_DEBUG("this->destroyed()...");
-        if (!(this->destroyed())) {
-            IS_ERR_LOGGED_ERROR("...failed on this->destroyed() throw (create_exception(destroy_failed))...");
-            throw (create_exception(destroy_failed));
-        }
+        XOS_MT_SEMAPHORE_DESTROYED();
     }
 };
 typedef semaphoret<> semaphore;

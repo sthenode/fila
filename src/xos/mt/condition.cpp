@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-/// Copyright (c) 1988-2018 $organization$
+/// Copyright (c) 1988-2019 $organization$
 ///
 /// This software is provided by the author and contributors ``as is'' 
 /// and any express or implied warranties, including, but not limited to, 
@@ -13,58 +13,20 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: timed.hpp
+///   File: condition.cpp
 ///
 /// Author: $author$
-///   Date: 4/12/2018
+///   Date: 8/19/2019
 ///////////////////////////////////////////////////////////////////////
-#ifndef _XOS_MT_POSIX_TIMED_HPP
-#define _XOS_MT_POSIX_TIMED_HPP
-
-#include "xos/base/base.hpp"
-
-#include <time.h>
-#include <errno.h>
-
-#if !defined(CLOCK_REALTIME)
-#define CLOCK_REALTIME 0
-#define clockid_t int
-inline int clock_gettime(clockid_t clk_id, struct timespec *res) {
-    if ((res)) {
-        res->tv_sec = 0;
-        res->tv_nsec = 0;
-        return 0; 
-    }
-    return EINVAL; 
-}
-#else /// !defined(CLOCK_REALTIME)
-#if !defined(HAS_CLOCK_GETTIME)
-#define HAS_CLOCK_GETTIME
-#endif /// !defined(HAS_CLOCK_GETTIME)
-#endif /// !defined(CLOCK_REALTIME)
+#include "xos/mt/condition.hpp"
 
 namespace xos {
 namespace mt {
-namespace posix {
 
 ///////////////////////////////////////////////////////////////////////
-/// Function: timed_until_time
+///  Class: conditiont
 ///////////////////////////////////////////////////////////////////////
-inline struct timespec timed_until_time(mseconds_t milliseconds) {
-    struct timespec t;
-#if defined(HAS_CLOCK_GETTIME)  
-    ::clock_gettime(CLOCK_REALTIME, &t);
-#else /// defined(HAS_CLOCK_GETTIME)  
-    t.tv_sec = 0;
-    t.tv_nsec = 0;
-#endif /// defined(HAS_CLOCK_GETTIME)  
-    t.tv_sec +=  mseconds_seconds(milliseconds);
-    t.tv_nsec +=  mseconds_nseconds(mseconds_mseconds(milliseconds));
-    return t;
-}
 
-} /// namespace posix
 } /// namespace mt
 } /// namespace xos
 
-#endif /// _XOS_MT_POSIX_TIMED_HPP 

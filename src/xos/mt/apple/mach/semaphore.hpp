@@ -48,41 +48,33 @@ public:
     typedef typename extends::unattached_t unattached_t;
     enum { unattached = extends::unattached };
 
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    semaphoret(attached_t detached, bool is_created, bool is_logged, bool is_err_logged): extends(detached, is_created, is_logged, is_err_logged) {
+    }
+    semaphoret(attached_t detached, bool is_created, bool is_logged): extends(detached, is_created, is_logged) {
+    }
     semaphoret(attached_t detached, bool is_created): extends(detached, is_created) {
     }
     semaphoret(attached_t detached): extends(detached) {
     }
     semaphoret(bool is_logged, bool is_err_logged): extends(is_logged, is_err_logged) {
-        IS_ERR_LOGGED_DEBUG("this->created()...");
-        if (!(this->created())) {
-            IS_ERR_LOGGED_ERROR("...failed on this->created() throw (create_exception(create_failed))...");
-            throw (create_exception(create_failed));
-        }
+        XOS_MT_SEMAPHORE_CREATED();
     }
     semaphoret(bool is_logged): extends(is_logged) {
-        IS_ERR_LOGGED_DEBUG("this->created()...");
-        if (!(this->created())) {
-            IS_ERR_LOGGED_ERROR("...failed on this->created() throw (create_exception(create_failed))...");
-            throw (create_exception(create_failed));
-        }
+        XOS_MT_SEMAPHORE_CREATED();
     }
     semaphoret(const semaphoret &copy): extends(copy) {
     }
     semaphoret() {
-        IS_ERR_LOGGED_DEBUG("this->created()...");
-        if (!(this->created())) {
-            IS_ERR_LOGGED_ERROR("...failed on this->created() throw (create_exception(create_failed))...");
-            throw (create_exception(create_failed));
-        }
+        XOS_MT_SEMAPHORE_CREATED();
     }
     virtual ~semaphoret() {
-        IS_ERR_LOGGED_DEBUG("this->destroyed()...");
-        if (!(this->destroyed())) {
-            IS_ERR_LOGGED_ERROR("...failed on this->destroyed() throw (create_exception(destroy_failed))...");
-            throw (create_exception(destroy_failed));
-        }
+        XOS_MT_SEMAPHORE_DESTROYED();
     }
 
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     virtual bool create(size_t initially_released) {
         semaphore_t* detached = 0;
 
@@ -105,47 +97,20 @@ public:
         }
         return false;
     }
-
     virtual semaphore_t* create_attached(size_t initially_released) {
         semaphore_t* detached = 0;
 
         if ((this->destroyed())) {
-            if ((detached = create_detached(m_semaphore, initially_released))) {
+            if ((detached = create_detached(semaphore_, initially_released))) {
                 this->attach(detached);
                 return detached;
             }
         }
         return 0;
     }
-    virtual semaphore_t* create_detached
-    (semaphore_t& semaphore, size_t initially_released) const {
-        int err = 0;
-        task_t task = mach_task_self();
-        sync_policy_t sync_policy = SYNC_POLICY_FIFO;
 
-        IS_ERR_LOGGED_DEBUG("::semaphore_create(task, &semaphore, sync_policy, initially_released)...");
-        if (KERN_SUCCESS == (err = ::semaphore_create(task, &semaphore, sync_policy, initially_released))) {
-            return &semaphore;
-        } else {
-            IS_ERR_LOGGED_ERROR("...failed err = " << err << " on ::semaphore_create(task, &semaphore, sync_policy, initially_released)");
-        }
-        return 0;
-    }
-    virtual bool destroy_detached(semaphore_t* semaphore) const {
-        if ((semaphore)) {
-            int err = 0;
-            task_t task = mach_task_self();
-
-            IS_ERR_LOGGED_DEBUG("::semaphore_destroy(task, *semaphore)...")
-            if (KERN_SUCCESS == (err = ::semaphore_destroy(task, *semaphore))) {
-                return true;
-            } else {
-                IS_ERR_LOGGED_ERROR("...failed err = " << err << " on ::semaphore_destroy(task, *semaphore)");
-            }
-        }
-        return false;
-    }
-
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     virtual bool acquire() {
         if (acquire_success == (untimed_acquire())) {
             return true;
@@ -177,17 +142,19 @@ public:
             semaphore_t* semaphore = 0;
 
             if ((semaphore = this->attached_to())) {
+                bool debug = this->is_logged_debug(milliseconds), logged = this->is_logged(), err_logged = this->is_err_logged();
                 int err = 0;
                 mach_timespec_t wait_time;
                 wait_time.tv_sec = mseconds_seconds(milliseconds);
-                wait_time.tv_nsec = mseconds_nseconds(milliseconds);
+                wait_time.tv_nsec = mseconds_nseconds(mseconds_mseconds(milliseconds));
 
-                IS_ERR_LOGGED_TRACE("::semaphore_timedwait(*semaphore, wait_time)...");
+                IF_ERR_LOGGED_DEBUG_TRACE(debug, logged, err_logged, "::semaphore_timedwait(*semaphore, wait_time)...");
                 if (KERN_SUCCESS == (err = ::semaphore_timedwait(*semaphore, wait_time))) {
+                    IF_ERR_LOGGED_DEBUG_TRACE(debug, logged, err_logged, "...::semaphore_timedwait(*semaphore, wait_time)");
                     return acquire_success;
                 } else {
                     if (KERN_OPERATION_TIMED_OUT == (err)) {
-                        IS_ERR_LOGGED_TRACE("...failed err = KERN_OPERATION_TIMED_OUT on ::semaphore_timedwait(*semaphore, wait_time)");
+                        IF_ERR_LOGGED_DEBUG_TRACE(debug, logged, err_logged, "...failed err = KERN_OPERATION_TIMED_OUT on ::semaphore_timedwait(*semaphore, wait_time)");
                         return acquire_busy;
                     } else {
                         if (KERN_ABORTED == (err)) {
@@ -228,8 +195,41 @@ public:
         return acquire_failed;
     }
 
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    virtual semaphore_t* create_detached
+    (semaphore_t& semaphore, size_t initially_released) const {
+        int err = 0;
+        task_t task = mach_task_self();
+        sync_policy_t sync_policy = SYNC_POLICY_FIFO;
+
+        IS_ERR_LOGGED_DEBUG("::semaphore_create(task, &semaphore, sync_policy, initially_released)...");
+        if (KERN_SUCCESS == (err = ::semaphore_create(task, &semaphore, sync_policy, initially_released))) {
+            return &semaphore;
+        } else {
+            IS_ERR_LOGGED_ERROR("...failed err = " << err << " on ::semaphore_create(task, &semaphore, sync_policy, initially_released)");
+        }
+        return 0;
+    }
+    virtual bool destroy_detached(semaphore_t* semaphore) const {
+        if ((semaphore)) {
+            int err = 0;
+            task_t task = mach_task_self();
+
+            IS_ERR_LOGGED_DEBUG("::semaphore_destroy(task, *semaphore)...")
+            if (KERN_SUCCESS == (err = ::semaphore_destroy(task, *semaphore))) {
+                return true;
+            } else {
+                IS_ERR_LOGGED_ERROR("...failed err = " << err << " on ::semaphore_destroy(task, *semaphore)");
+            }
+        }
+        return false;
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 protected:
-    semaphore_t m_semaphore;
+    semaphore_t semaphore_;
 };
 typedef semaphoret<> semaphore;
 

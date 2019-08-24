@@ -55,34 +55,18 @@ public:
     semaphoret(attached_t detached): extends(detached) {
     }
     semaphoret(bool is_logged, bool is_err_logged): extends(is_logged, is_err_logged) {
-        IS_ERR_LOGGED_DEBUG("this->created()...");
-        if (!(this->created())) {
-            IS_ERR_LOGGED_ERROR("...failed on this->created() throw (create_exception(create_failed))...");
-            throw (create_exception(create_failed));
-        }
+        XOS_MT_SEMAPHORE_CREATED();
     }
     semaphoret(bool is_logged): extends(is_logged) {
-        IS_ERR_LOGGED_DEBUG("this->created()...");
-        if (!(this->created())) {
-            IS_ERR_LOGGED_ERROR("...failed on this->created() throw (create_exception(create_failed))...");
-            throw (create_exception(create_failed));
-        }
+        XOS_MT_SEMAPHORE_CREATED();
     }
     semaphoret(const semaphoret &copy): extends(copy) {
     }
     semaphoret() {
-        IS_ERR_LOGGED_DEBUG("this->created()...");
-        if (!(this->created())) {
-            IS_ERR_LOGGED_ERROR("...failed on this->created() throw (create_exception(create_failed))...");
-            throw (create_exception(create_failed));
-        }
+        XOS_MT_SEMAPHORE_CREATED();
     }
     virtual ~semaphoret() {
-        IS_ERR_LOGGED_DEBUG("this->destroyed()...");
-        if (!(this->destroyed())) {
-            IS_ERR_LOGGED_ERROR("...failed on this->destroyed() throw (create_exception(destroy_failed))...");
-            throw (create_exception(destroy_failed));
-        }
+        XOS_MT_SEMAPHORE_DESTROYED();
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -147,35 +131,26 @@ public:
     }
     virtual acquire_status timed_acquire(mseconds_t milliseconds) {
         attached_t detached = 0;
+
         if ((detached = this->attached_to())) {
+            bool debug = this->is_logged_debug(milliseconds), logged = this->is_logged(), err_logged = this->is_err_logged();
             DWORD dwMilliseconds = (0 > milliseconds)?(INFINITE):((DWORD)milliseconds);
             DWORD dwResult = 0;
-            if ((0 < milliseconds) && ((this->trace_threashold_mseconds()) > milliseconds)) {
-                IS_LOGGING_TRACE("::WaitForSingleObject(detached, dwMilliseconds)...");
-            } else {
-                IS_LOGGING_DEBUG("::WaitForSingleObject(detached, dwMilliseconds)...");
-            }
+
+            IF_ERR_LOGGED_DEBUG_TRACE(debug, logged, err_logged, "::WaitForSingleObject(detached, dwMilliseconds = " << dwMilliseconds << ")...");
             if ((WAIT_OBJECT_0 == (dwResult = ::WaitForSingleObject(detached, dwMilliseconds)))) {
-                if ((0 < milliseconds) && ((this->trace_threashold_mseconds()) > milliseconds)) {
-                    IS_LOGGING_TRACE("...::WaitForSingleObject(detached, dwMilliseconds)");
-                } else {
-                    IS_LOGGING_DEBUG("...::WaitForSingleObject(detached, dwMilliseconds)");
-                }
+                IF_ERR_LOGGED_DEBUG_TRACE(debug, logged, err_logged, "...::WaitForSingleObject(detached, dwMilliseconds = " << dwMilliseconds << ")");
                 return acquire_success;
             } else {
                 switch (dwResult) {
                 case WAIT_TIMEOUT:
-                    if ((0 < milliseconds) && ((this->trace_threashold_mseconds()) > milliseconds)) {
-                        IS_LOGGING_TRACE("...failed WAIT_TIMEOUT on ::WaitForSingleObject(detached, dwMilliseconds)");
-                    } else {
-                        IS_LOGGING_DEBUG("...failed WAIT_TIMEOUT on ::WaitForSingleObject(detached, dwMilliseconds)");
-                    }
+                    IF_ERR_LOGGED_DEBUG_TRACE(debug, logged, err_logged, "...failed WAIT_TIMEOUT on ::WaitForSingleObject(detached, dwMilliseconds = " << dwMilliseconds << ")");
                     return acquire_busy;
                 case WAIT_ABANDONED:
-                    IS_LOGGING_ERROR("...failed WAIT_ABANDONED on ::WaitForSingleObject(detached, dwMilliseconds)");
+                    IS_LOGGING_ERROR("...failed WAIT_ABANDONED on ::WaitForSingleObject(detached, dwMilliseconds = " << dwMilliseconds << ")");
                     return acquire_interrupted;
                 default:
-                    IS_LOGGING_ERROR("...failed on ::WaitForSingleObject(detached, dwMilliseconds)");
+                    IS_LOGGING_ERROR("...failed on ::WaitForSingleObject(detached, dwMilliseconds = " << dwMilliseconds << ")");
                 }
             }
         }

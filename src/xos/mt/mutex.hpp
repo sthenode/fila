@@ -26,6 +26,24 @@
 #include "xos/base/created.hpp"
 #include "xos/io/logger.hpp"
 
+#define XOS_MT_MUTEX_CREATED() \
+    IS_ERR_LOGGED_DEBUG("this->created()..."); \
+    if (!(this->created())) { \
+        IS_ERR_LOGGED_ERROR("...failed on this->created() throw (create_exception(create_failed))..."); \
+        throw (create_exception(create_failed)); \
+    } else { \
+        IS_ERR_LOGGED_DEBUG("...this->created()"); \
+    }
+
+#define XOS_MT_MUTEX_DESTROYED() \
+    IS_ERR_LOGGED_DEBUG("this->destroyed()..."); \
+    if (!(this->destroyed())) { \
+        IS_ERR_LOGGED_ERROR("...failed on this->destroyed() throw (create_exception(destroy_failed))..."); \
+        throw (create_exception(destroy_failed)); \
+    } else { \
+        IS_ERR_LOGGED_DEBUG("...this->destroyed()"); \
+    }
+
 namespace xos {
 namespace mt {
 
@@ -66,6 +84,15 @@ public:
     typedef TUnattached unattached_t;
     enum { unattached = VUnattached };
     
+    mutext(attached_t detached, bool is_created, bool is_logged, bool is_err_logged)
+    : extends(detached, is_created) {
+        this->set_is_logged(is_logged);
+        this->set_is_err_logged(is_err_logged);
+    }
+    mutext(attached_t detached, bool is_created, bool is_logged)
+    : extends(detached, is_created) {
+        this->set_is_logged(is_logged);
+    }
     mutext(attached_t detached, bool is_created)
     : extends(detached, is_created) {
     }
@@ -85,12 +112,7 @@ public:
     mutext() {
     }
     virtual ~mutext() {
-        IS_ERR_LOGGED_DEBUG("this->destroyed()...");
-        if (!(this->destroyed())) {
-            const create_exception e(destroy_failed);
-            IS_ERR_LOGGED_ERROR("...failed on this->destroyed() throw (const create_exception e(destroy_failed))...");
-            throw (e);
-        }
+        XOS_MT_MUTEX_DESTROYED();
     }
 
 };
@@ -115,43 +137,27 @@ public:
     typedef typename extends::unattached_t unattached_t;
     enum { unattached = extends::unattached };
     
+    mutext(attached_t detached, bool is_created, bool is_logged, bool is_err_logged): extends(detached, is_created, is_logged, is_err_logged) {
+    }
+    mutext(attached_t detached, bool is_created, bool is_logged): extends(detached, is_created, is_logged) {
+    }
     mutext(attached_t detached, bool is_created): extends(detached, is_created) {
     }
     mutext(attached_t detached): extends(detached) {
     }
     mutext(bool is_logged, bool is_err_logged): extends(is_logged, is_err_logged) {
-        IS_ERR_LOGGED_DEBUG("this->created()...");
-        if (!(this->created())) {
-            const create_exception e(create_failed);
-            IS_ERR_LOGGED_ERROR("...failed on this->created() throw (const create_exception e(create_failed))...");
-            throw (e);
-        }
+        XOS_MT_MUTEX_CREATED();
     }
     mutext(bool is_logged): extends(is_logged) {
-        IS_ERR_LOGGED_DEBUG("this->created()...");
-        if (!(this->created())) {
-            const create_exception e(create_failed);
-            IS_ERR_LOGGED_ERROR("...failed on this->created() throw (const create_exception e(create_failed))...");
-            throw (e);
-        }
+        XOS_MT_MUTEX_CREATED();
     }
     mutext(const mutext &copy): extends(copy) {
     }
     mutext() {
-        IS_ERR_LOGGED_DEBUG("this->created()...");
-        if (!(this->created())) {
-            const create_exception e(create_failed);
-            IS_ERR_LOGGED_ERROR("...failed on this->created() throw (const create_exception e(create_failed))...");
-            throw (e);
-        }
+        XOS_MT_MUTEX_CREATED();
     }
     virtual ~mutext() {
-        IS_ERR_LOGGED_DEBUG("this->destroyed()...");
-        if (!(this->destroyed())) {
-            const create_exception e(destroy_failed);
-            IS_ERR_LOGGED_ERROR("...failed on this->destroyed() throw (const create_exception e(destroy_failed))...");
-            throw (e);
-        }
+        XOS_MT_MUTEX_DESTROYED();
     }
 };
 typedef mutext<> mutex;

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-/// Copyright (c) 1988-2018 $organization$
+/// Copyright (c) 1988-2019 $organization$
 ///
 /// This software is provided by the author and contributors ``as is'' 
 /// and any express or implied warranties, including, but not limited to, 
@@ -13,48 +13,52 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: semaphore.hpp
+///   File: main_opt.hpp
 ///
 /// Author: $author$
-///   Date: 4/11/2018
+///   Date: 8/23/2019
 ///////////////////////////////////////////////////////////////////////
-#ifndef _XOS_MT_POSIX_SEMAPHORE_HPP
-#define _XOS_MT_POSIX_SEMAPHORE_HPP
+#ifndef _XOS_APP_CONSOLE_MT_SEMAPHORE_MAIN_OPT_HPP
+#define _XOS_APP_CONSOLE_MT_SEMAPHORE_MAIN_OPT_HPP
 
-#include "xos/mt/semaphore.hpp"
+#include "xos/app/console/mt/main.hpp"
 
 namespace xos {
+namespace app {
+namespace console {
 namespace mt {
-namespace posix {
+namespace semaphore {
 
+typedef mt::main main_optt_extends;
+typedef main_optt_extends::implements main_optt_implements;
 ///////////////////////////////////////////////////////////////////////
-///  Class: semaphoret
+///  Class: main_optt
 ///////////////////////////////////////////////////////////////////////
-template 
-<class TExtends = extended::semaphore, 
- class TImplements = typename TExtends::implements>
-
-class _EXPORT_CLASS semaphoret: virtual public TImplements, public TExtends {
+template <class TImplements = main_optt_implements, class TExtends = main_optt_extends>
+class _EXPORT_CLASS main_optt: virtual public TImplements, public TExtends {
 public:
     typedef TImplements implements;
     typedef TExtends extends;
 
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
-    semaphoret(const semaphoret &copy) {
+    main_optt() {
     }
-    semaphoret() {
+    virtual ~main_optt() {
     }
-    virtual ~semaphoret() {
+private:
+    main_optt(const main_optt &copy) {
     }
 
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
-};
-typedef semaphoret<> semaphore;
+}; /// class _EXPORT_CLASS main_optt
+typedef main_optt<> main_opt;
 
-} /// namespace posix
+} /// namespace semaphore
 } /// namespace mt
+} /// namespace console
+} /// namespace app
 } /// namespace xos
 
-#endif /// _XOS_MT_POSIX_SEMAPHORE_HPP 
+#endif /// _XOS_APP_CONSOLE_MT_SEMAPHORE_MAIN_OPT_HPP 
