@@ -53,9 +53,13 @@ $${fila_DEFINES} \
 # semaphore HEADERS
 #
 semaphore_HEADERS += \
+$${FILA_SRC}/xos/platform/os/posix/semaphore.h \
+$${FILA_SRC}/xos/platform/os/posix/semaphore.hpp \
 $${FILA_SRC}/xos/platform/os/microsoft/windows/Semaphore.h \
 $${FILA_SRC}/xos/platform/os/microsoft/windows/Semaphore.hpp \
+$${FILA_SRC}/xos/platform/os/semaphores.hpp \
 $${FILA_SRC}/xos/mt/semaphore.hpp \
+$${FILA_SRC}/xos/mt/posix/semaphore.hpp \
 $${FILA_SRC}/xos/mt/microsoft/windows/semaphore.hpp \
 \
 $${FILA_SRC}/xos/app/console/mt/semaphore/main_opt.hpp \
@@ -64,7 +68,7 @@ $${FILA_SRC}/xos/app/console/mt/semaphore/main.hpp \
 # semaphore SOURCES
 #
 semaphore_SOURCES += \
-$${FILA_SRC}/xos/platform/os/microsoft/windows/Semaphore.cpp \
+$${FILA_SRC}/xos/platform/os/semaphores.cpp \
 \
 $${FILA_SRC}/xos/app/console/mt/semaphore/main_opt.cpp \
 $${FILA_SRC}/xos/app/console/mt/semaphore/main.cpp \
