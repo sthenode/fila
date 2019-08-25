@@ -83,6 +83,8 @@ public:
     typedef TUnattached unattached_t;
     enum { unattached = VUnattached };
     
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     semaphoret(attached_t detached, bool is_created, bool is_logged, bool is_err_logged)
     : extends(detached, is_created) {
         this->set_is_logged(is_logged);
@@ -115,6 +117,8 @@ public:
         XOS_MT_SEMAPHORE_DESTROYED();
     }
 
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 };
 typedef semaphoret<> semaphore;
 } /// namespace extended
@@ -135,6 +139,8 @@ public:
     typedef typename extends::unattached_t unattached_t;
     enum { unattached = extends::unattached };
     
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     semaphoret(attached_t detached, bool is_created, bool is_logged, bool is_err_logged): extends(detached, is_created, is_logged, is_err_logged) {
     }
     semaphoret(attached_t detached, bool is_created, bool is_logged): extends(detached, is_created, is_logged) {
@@ -157,6 +163,9 @@ public:
     virtual ~semaphoret() {
         XOS_MT_SEMAPHORE_DESTROYED();
     }
+
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 };
 typedef semaphoret<> semaphore;
 } /// namespace derived

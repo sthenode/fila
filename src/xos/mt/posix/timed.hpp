@@ -38,9 +38,9 @@ inline int clock_gettime(clockid_t clk_id, struct timespec *res) {
     return EINVAL; 
 }
 #else /// !defined(CLOCK_REALTIME)
-#if !defined(HAS_CLOCK_GETTIME)
-#define HAS_CLOCK_GETTIME
-#endif /// !defined(HAS_CLOCK_GETTIME)
+#if !defined(CLOCK_HAS_GETTIME)
+#define CLOCK_HAS_GETTIME
+#endif /// !defined(CLOCK_HAS_GETTIME)
 #endif /// !defined(CLOCK_REALTIME)
 
 namespace xos {
@@ -51,16 +51,21 @@ namespace posix {
 /// Function: timed_until_time
 ///////////////////////////////////////////////////////////////////////
 inline struct timespec timed_until_time(mseconds_t milliseconds) {
-    struct timespec t;
-#if defined(HAS_CLOCK_GETTIME)  
-    ::clock_gettime(CLOCK_REALTIME, &t);
-#else /// defined(HAS_CLOCK_GETTIME)  
-    t.tv_sec = 0;
-    t.tv_nsec = 0;
-#endif /// defined(HAS_CLOCK_GETTIME)  
-    t.tv_sec +=  mseconds_seconds(milliseconds);
-    t.tv_nsec +=  mseconds_nseconds(mseconds_mseconds(milliseconds));
-    return t;
+    struct timespec until_time;
+#if defined(CLOCK_HAS_GETTIME)
+    int err = 0;
+    if ((err = ::clock_gettime(CLOCK_REALTIME, &until_time))) {
+        until_time.tv_sec = 0;
+        until_time.tv_nsec = 0;
+        return until_time;
+    }
+#else /// defined(CLOCK_HAS_GETTIME)  
+    until_time.tv_sec = 0;
+    until_time.tv_nsec = 0;
+#endif /// defined(CLOCK_HAS_GETTIME)  
+    until_time.tv_sec +=  mseconds_seconds(milliseconds);
+    until_time.tv_nsec +=  mseconds_nseconds(mseconds_mseconds(milliseconds));
+    return until_time;
 }
 
 } /// namespace posix

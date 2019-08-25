@@ -100,6 +100,9 @@ protected:
         unsigned enqueue_;
         mseconds_t sleep_;
     };
+
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     int (derives::*run_)(int argc, char_t** argv, char_t** env);
     virtual int run(int argc, char_t** argv, char_t** env) {
         if ((run_)) {
@@ -132,7 +135,17 @@ protected:
         }
         return err;
     }
-
+    virtual int this_version_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        err = this->version_run(argc, argv, env);
+        return err;
+    }
+    virtual int set_version_run(int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        run_ = &derives::this_version_run;
+        return err;
+    }
+    
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
 };
