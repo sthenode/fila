@@ -21,6 +21,7 @@
 #ifndef _XOS_MT_POSIX_MUTEX_HPP
 #define _XOS_MT_POSIX_MUTEX_HPP
 
+#include "xos/mt/posix/timed.hpp"
 #include "xos/mt/mutex.hpp"
 
 #include <pthread.h>
@@ -38,22 +39,6 @@
 #define PTHREAD_MUTEX_HAS_TIMEDLOCK
 #endif /// !defined(PTHREAD_MUTEX_HAS_TIMEDLOCK)
 #endif /// defined(HAS_POSIX_TIMEOUTS)
-
-#if !defined(CLOCK_REALTIME)
-#define CLOCK_REALTIME 0
-#define clockid_t int
-#if !defined(CLOCK_HAS_GETTIME)
-inline int clock_gettime(clockid_t clk_id, struct timespec *res) {
-    if ((res)) {
-        res->tv_sec = 0;
-        res->tv_nsec = 0;
-        return 0; 
-    }
-    return EINVAL; 
-}
-#define CLOCK_HAS_GETTIME
-#endif /// !defined(CLOCK_HAS_GETTIME)
-#endif /// !defined(CLOCK_REALTIME)
 
 #if !defined(PTHREAD_MUTEX_HAS_TIMEDLOCK)
 inline int pthread_mutex_timedlock(pthread_mutex_t *mutex, const struct timespec *abs_timeout) {

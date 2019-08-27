@@ -21,8 +21,7 @@
 #ifndef _XOS_APP_CONSOLE_MT_CONDITION_MAIN_OPT_HPP
 #define _XOS_APP_CONSOLE_MT_CONDITION_MAIN_OPT_HPP
 
-#include "xos/console/lib/version/main.hpp"
-#include "xos/lib/fila/version.hpp"
+#include "xos/app/console/mt/main.hpp"
 
 namespace xos {
 namespace app {
@@ -34,8 +33,7 @@ namespace condition {
 ///  Class: main_optt
 ///////////////////////////////////////////////////////////////////////
 template 
-<class TImplements = xos::console::lib::version::maint_implements, 
- class TExtends = xos::console::lib::version::maint<xos::lib::fila::version> >
+<class TImplements = mt::main::implements,  class TExtends = mt::main>
 
 class _EXPORT_CLASS main_optt: virtual public TImplements, public TExtends {
 public:

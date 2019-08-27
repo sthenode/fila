@@ -21,6 +21,7 @@
 #ifndef _XOS_MT_POSIX_SEMAPHORE_HPP
 #define _XOS_MT_POSIX_SEMAPHORE_HPP
 
+#include "xos/mt/posix/timed.hpp"
 #include "xos/mt/semaphore.hpp"
 
 #include <semaphore.h>
@@ -49,22 +50,6 @@
 #define POSIX_SEM_HAS_TIMEDWAIT_RELATIVE_NP
 #endif /// defined(SEM_HAS_TIMEDWAIT_RELATIVE_NP)
 #endif /// !defined(POSIX_SEM_HAS_TIMEDWAIT_RELATIVE_NP)
-
-#if !defined(CLOCK_REALTIME)
-#define CLOCK_REALTIME 0
-#define clockid_t int
-#if !defined(CLOCK_HAS_GETTIME)
-inline int clock_gettime(clockid_t clk_id, struct timespec *res) {
-    if ((res)) {
-        res->tv_sec = 0;
-        res->tv_nsec = 0;
-        return 0; 
-    }
-    return EINVAL; 
-}
-#define CLOCK_HAS_GETTIME
-#endif /// !defined(CLOCK_HAS_GETTIME)
-#endif /// !defined(CLOCK_REALTIME)
 
 #if !defined(POSIX_SEM_HAS_TIMEDWAIT)
 inline int sem_timedwait(sem_t *sem, const struct timespec *abs_timeout) {

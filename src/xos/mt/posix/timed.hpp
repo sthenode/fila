@@ -23,22 +23,30 @@
 
 #include "xos/base/base.hpp"
 
+#include <sys/time.h>
 #include <time.h>
 #include <errno.h>
 
 #if !defined(CLOCK_REALTIME)
 #define CLOCK_REALTIME 0
 #define clockid_t int
-inline int clock_gettime(clockid_t clk_id, struct timespec *res) {
-    if ((res)) {
-        res->tv_sec = 0;
-        res->tv_nsec = 0;
-        return 0; 
-    }
-    return EINVAL; 
-}
-#else /// !defined(CLOCK_REALTIME)
 #if !defined(CLOCK_HAS_GETTIME)
+inline int clock_gettime(clockid_t clk_id, struct timespec *res) {
+    if ((res) && (CLOCK_REALTIME == clk_id)) {
+        int err = 0;
+        struct timeval tv;
+        if ((err = gettimeofday(&tv, NULL))) {
+            res->tv_sec = 0;
+            res->tv_nsec = 0;
+            return errno;
+        } else {
+            res->tv_sec = tv.tv_sec;
+            res->tv_nsec = ::xos::useconds_nseconds(tv.tv_usec);
+            return 0;
+        }
+    }
+    return EINVAL;
+}
 #define CLOCK_HAS_GETTIME
 #endif /// !defined(CLOCK_HAS_GETTIME)
 #endif /// !defined(CLOCK_REALTIME)
@@ -47,7 +55,7 @@ namespace xos {
 namespace mt {
 namespace posix {
 
-///////////////////////////////////////////////////////////////////////
+/*///////////////////////////////////////////////////////////////////////
 /// Function: timed_until_time
 ///////////////////////////////////////////////////////////////////////
 inline struct timespec timed_until_time(mseconds_t milliseconds) {
@@ -66,7 +74,7 @@ inline struct timespec timed_until_time(mseconds_t milliseconds) {
     until_time.tv_sec +=  mseconds_seconds(milliseconds);
     until_time.tv_nsec +=  mseconds_nseconds(mseconds_mseconds(milliseconds));
     return until_time;
-}
+}*/
 
 } /// namespace posix
 } /// namespace mt

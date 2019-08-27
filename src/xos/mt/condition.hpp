@@ -25,7 +25,7 @@
 #include "xos/base/waited.hpp"
 #include "xos/base/signaled.hpp"
 #include "xos/base/created.hpp"
-#include "xos/io/logger.hpp"
+#include "xos/mt/mutex.hpp"
 
 #define XOS_MT_CONDITION_CREATED() \
     IS_ERR_LOGGED_DEBUG("this->created()..."); \
@@ -118,6 +118,38 @@ public:
 
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
+    using extends::create;
+    virtual bool create(bool initially_signaled) {
+        attached_t detached = ((attached_t)unattached);
+        if (((attached_t)unattached) != (detached = create_attached(initially_signaled))) {
+            this->set_is_created();
+            return true;
+        }
+        return false;
+    }
+    using extends::create_attached;
+    virtual attached_t create_attached(bool initially_signaled) {
+        attached_t detached = ((attached_t)unattached);
+        if (!(initially_signaled)) {
+            detached = create_attached();
+        } else {
+            if ((detached = create_detached(initially_signaled))) {
+                this->attach(detached);
+            }
+        }
+        return detached;
+    }
+    using extends::create_detached;
+    virtual attached_t create_detached(bool initially_signaled) const {
+        attached_t detached = ((attached_t)unattached);
+        if (!(initially_signaled)) {
+            detached = create_detached();
+        }
+        return detached;
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 }; /// class _EXPORT_CLASS conditiont
 typedef conditiont<> condition;
 } /// namespace extended
@@ -135,12 +167,30 @@ public:
     typedef TImplements implements;
     typedef TExtends extends;
 
+    typedef derived::mutex mutex_t;
     typedef typename extends::attached_t attached_t;
     typedef typename extends::unattached_t unattached_t;
     enum { unattached = extends::unattached };
 
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
+    conditiont(mutex_t& mutex, bool& signaled, attached_t detached, bool is_created, bool is_logged, bool is_err_logged): extends(detached, is_created, is_logged, is_err_logged) {
+    }
+    conditiont(mutex_t& mutex, bool& signaled, attached_t detached, bool is_created, bool is_logged): extends(detached, is_created, is_logged) {
+    }
+    conditiont(mutex_t& mutex, bool& signaled, attached_t detached, bool is_created): extends(detached, is_created) {
+    }
+    conditiont(mutex_t& mutex, bool& signaled, attached_t detached): extends(detached) {
+    }
+    conditiont(mutex_t& mutex, bool& signaled, bool is_logged, bool is_err_logged): extends(is_logged, is_err_logged) {
+        XOS_MT_CONDITION_CREATED();
+    }
+    conditiont(mutex_t& mutex, bool& signaled, bool is_logged): extends(is_logged) {
+        XOS_MT_CONDITION_CREATED();
+    }
+    conditiont(mutex_t& mutex, bool& signaled) {
+        XOS_MT_CONDITION_CREATED();
+    }
     conditiont(attached_t detached, bool is_created, bool is_logged, bool is_err_logged): extends(detached, is_created, is_logged, is_err_logged) {
     }
     conditiont(attached_t detached, bool is_created, bool is_logged): extends(detached, is_created, is_logged) {
@@ -166,6 +216,10 @@ public:
     
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
+    virtual attached_t create_detached(bool initially_signaled) const {
+        attached_t detached = (attached_t)(unattached);
+        return detached;
+    }
     virtual attached_t create_detached() const {
         attached_t detached = (attached_t)(unattached);
         return detached;

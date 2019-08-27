@@ -45,7 +45,7 @@ public:
 
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
-    maint(): run_(0) {
+    maint() {
     }
     virtual ~maint() {
     }
@@ -56,38 +56,75 @@ private:
 protected:
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
-    int (derives::*run_)(int argc, char_t** argv, char_t** env);
-    virtual int run(int argc, char_t** argv, char_t** env) {
-        if ((run_)) {
-            return (this->*run_)(argc, argv, env);
+    int run(::xos::signaled& signaled) {
+        int err = 0;
+        mseconds_t timeout = 0;
+        bool untimed = this->infinite_timeout(timeout);
+        for (unsigned tries = 1, tried = 0; tried < tries; ++tried) {
+            this->outlln(__LOCATION__, "try {...", NULL);
+            try {
+                if ((untimed)) {
+                    this->outlln(__LOCATION__, "signaled.signal()...", NULL);
+                    signaled.signal();
+                    this->outlln(__LOCATION__, "wait wait(signaled)...", NULL);
+                    ::xos::wait wait(signaled);
+                    this->outlln(__LOCATION__, "...wait wait(signaled)", NULL);
+                } else {
+                    if ((timeout)) {
+                        this->outlln(__LOCATION__, "timed_wait wait(signaled, timeout)...", NULL);
+                        ::xos::wait wait(signaled, timeout);
+                        this->outlln(__LOCATION__, "...timed_wait wait(signaled, timeout)", NULL);
+                    } else {
+                        this->outlln(__LOCATION__, "try_wait wait(signaled)...", NULL);
+                        ::xos::try_wait wait(signaled);
+                        this->outlln(__LOCATION__, "...try_wait wait(signaled)", NULL);
+                    }
+                }
+                this->outlln(__LOCATION__, "...} try", NULL);
+            } catch(const wait_exception& e) {
+                this->outlln(__LOCATION__, "...catch (const wait_exception& e status = ", e.status_to_string().chars(), ")", NULL);
+                if (wait_busy == (e.status())) {
+                    this->outlln(__LOCATION__, "signaled.signal()...", NULL);
+                    signaled.signal();
+                    tries = 2;
+                } else {
+                    err = 1;
+                }
+            } catch(const exception& e) {
+                this->outlln(__LOCATION__, "...catch (const exception& e status = ", e.status_to_string().chars(), ")", NULL);
+                err = 1;
+            } catch(...) {
+                this->outlln(__LOCATION__, "...catch (...)", NULL);
+                err = 1;
+            }
         }
-        return default_run(argc, argv, env);
+        return err;
     }
-    virtual int default_run(int argc, char_t** argv, char_t** env) {
-        return this->posix_run(argc, argv, env);
-    }
-
-    ///////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////
-    template <class TCondition>
+    template <class TCondition, class TMutex>
     int run() {
         int err = 0;
-        this->outlln("try {...", NULL);
+        this->outlln(__LOCATION__, "try {...", NULL);
         try {
-            TCondition condition;
-            this->outlln("...} try", NULL);
+            bool signaled = false;
+            TMutex mutex;
+            TCondition condition(mutex, signaled);
+            err = run(condition);
+            this->outlln(__LOCATION__, "...} try", NULL);
+        } catch(const exception& e) {
+            this->outlln(__LOCATION__, "...catch (const exception& e status = ", e.status_to_string().chars(), ")", NULL);
+            err = 1;
         } catch (...) {
-            this->outlln("...catch (...)", NULL);
+            this->outlln(__LOCATION__, "...catch (...)", NULL);
             err = 1;
         }
         return err;
     }
 
     virtual int posix_run(int argc, char_t** argv, char_t** env) {
-        return this->run< ::xos::mt::posix::condition >();
+        return this->run< ::xos::mt::posix::condition, ::xos::mt::posix::mutex >();
     }
     virtual int derived_run(int argc, char_t** argv, char_t** env) {
-        return this->run< ::xos::mt::derived::condition >();
+        return this->run< ::xos::mt::derived::condition, ::xos::mt::derived::mutex >();
     }
 
     ///////////////////////////////////////////////////////////////////////
