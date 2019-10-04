@@ -22,6 +22,7 @@
 #define _XOS_MT_POSIX_PROCESS_HPP
 
 #include "xos/mt/process.hpp"
+#include "xos/mt/posix/pipe.hpp"
 #include "xos/base/argv.hpp"
 #include "thirdparty/gnu/glibc/posix/execvpe.h"
 
@@ -52,12 +53,21 @@ public:
     typedef typename implements::unattached_t unattached_t;
     enum { unattached = implements::unattached};
 
+    typedef typename implements::string_t string_t;
     typedef typename implements::char_t char_t;
     typedef typename implements::end_t end_t;
     enum { end = implements::end };
     
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
+    processt
+    (const string_t& path, const pipe& input, const pipe& output, const pipe& error, 
+     char_t** argv, char_t** env, bool is_detached = false): is_forked_(false) {
+        if (!(this->create(path, input, output, error, argv, env, is_detached))) {
+            LOG_ERROR("...failed on this->create(path, input, output, error, argv, env, is_detached) throw create_exception(create_failed)...")
+            throw create_exception(create_failed);
+        }
+    }
     processt
     (const char_t* path, char_t** argv, char_t** env,
      int* fdup, int** pdup, bool is_detached = false): is_forked_(false) {
@@ -115,96 +125,27 @@ private:
         throw exception(exception_unexpected);
     }
     
-protected:
+public:
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
-    virtual bool exec_detached
-    (const char_t* path, char_t** argv, char_t** env,
-     int* fdup, int** pdup, bool is_detached = false) const {
-        if ((path) && (path[0])) {
-            if ((argv) && (argv[0])) {
-                if ((env) && (env[0])) {
-                    int err = 0;
+    virtual bool create
+    (const string_t& path, const pipe& input, const pipe& output, const pipe& error,
+     char_t** argv, char_t** env,  bool is_detached = false) {
+        const char_t* chars = 0;
+        int *fdup = 0, *pdup[3];
 
-                    if ((fdup)) {
-                        int fd = 0;
-                        for (int i = 0; (i < 3) && (fd = fdup[i]); ++i) {
-                            if (0 > (err = ::dup2(fd, i))) {
-                                return false;
-                            } else {
-                                ::close(fd);
-                            }
-                        }
-                    }
-                    if ((pdup)) {
-                        int* p = 0;
-                        for (int i = 0; (i < 3) && (p = pdup[i]); ++i) {
-                            int fd = p[(i)?(1):(0)];
-                            if (0 > (err = ::dup2(fd, i))) {
-                                return false;
-                            } else {
-                                ::close(p[0]);
-                                ::close(p[1]);
-                            }
-                        }
-                    }
-                    if (!(err = ::execvpe(path, argv, env))) {
-                        return true;
-                    }
-                } else {
-                    return exec_detached(path, argv, is_detached);
-                }
-            } else {
-                return exec_detached(path, is_detached);
-            }
-        }
-        return false;
-    }
-    virtual bool exec_detached
-    (const char_t* path, char_t** argv, char_t** env, bool is_detached = false) const {
-        if ((path) && (path[0])) {
-            if ((argv) && (argv[0])) {
-                if ((env) && (env[0])) {
-                    int err = 0;
-                    if (!(err = ::execvpe(path, argv, env))) {
-                        return true;
-                    }
-                } else {
-                    return exec_detached(path, argv, is_detached);
-                }
-            } else {
-                return exec_detached(path, is_detached);
-            }
-        }
-        return false;
-    }
-    virtual bool exec_detached
-    (const char_t* path, char_t** argv, bool is_detached = false) const {
-        if ((path) && (path[0])) {
-            if ((argv) && (argv[0])) {
-                int err = 0;
-                if (!(err = ::execvp(path, argv))) {
-                    return true;
-                }
-            } else {
-                return exec_detached(path, is_detached);
-            }
-        }
-        return false;
-    }
-    virtual bool exec_detached(const char_t* path, bool is_detached = false) const {
-        if ((path) && (path[0])) {
-            ::xos::argvt<char_t> args(&path, 1);
-            char_t **argv = args.elements();
-            int err = 0;
-            if ((argv) && !(err = ::execvp(path, argv))) {
+        if ((chars = path.has_chars()) && (pdup[0] = input.attached_to()) 
+            && (pdup[1] = output.attached_to()) && (pdup[2] = error.attached_to())) {
+            attached_t detached = ((attached_t)unattached);
+
+            if (0 <= (detached = create_attached(chars, argv, env, fdup, pdup, is_detached))) {
+                this->set_is_created();
                 return true;
             }
         }
         return false;
     }
 
-public:
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
     virtual bool create
@@ -432,6 +373,95 @@ public:
         extends::set_is_created(to);
         is_forked_ = to;
         return this->is_created();
+    }
+
+protected:
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    virtual bool exec_detached
+    (const char_t* path, char_t** argv, char_t** env,
+     int* fdup, int** pdup, bool is_detached = false) const {
+        if ((path) && (path[0])) {
+            if ((argv) && (argv[0])) {
+                if ((env) && (env[0])) {
+                    int err = 0;
+
+                    if ((fdup)) {
+                        int fd = 0;
+                        for (int i = 0; (i < 3) && (fd = fdup[i]); ++i) {
+                            if (0 > (err = ::dup2(fd, i))) {
+                                return false;
+                            } else {
+                                ::close(fd);
+                            }
+                        }
+                    }
+                    if ((pdup)) {
+                        int* p = 0;
+                        for (int i = 0; (i < 3) && (p = pdup[i]); ++i) {
+                            int fd = p[(i)?(1):(0)];
+                            if (0 > (err = ::dup2(fd, i))) {
+                                return false;
+                            } else {
+                                ::close(p[0]);
+                                ::close(p[1]);
+                            }
+                        }
+                    }
+                    if (!(err = ::execvpe(path, argv, env))) {
+                        return true;
+                    }
+                } else {
+                    return exec_detached(path, argv, is_detached);
+                }
+            } else {
+                return exec_detached(path, is_detached);
+            }
+        }
+        return false;
+    }
+    virtual bool exec_detached
+    (const char_t* path, char_t** argv, char_t** env, bool is_detached = false) const {
+        if ((path) && (path[0])) {
+            if ((argv) && (argv[0])) {
+                if ((env) && (env[0])) {
+                    int err = 0;
+                    if (!(err = ::execvpe(path, argv, env))) {
+                        return true;
+                    }
+                } else {
+                    return exec_detached(path, argv, is_detached);
+                }
+            } else {
+                return exec_detached(path, is_detached);
+            }
+        }
+        return false;
+    }
+    virtual bool exec_detached
+    (const char_t* path, char_t** argv, bool is_detached = false) const {
+        if ((path) && (path[0])) {
+            if ((argv) && (argv[0])) {
+                int err = 0;
+                if (!(err = ::execvp(path, argv))) {
+                    return true;
+                }
+            } else {
+                return exec_detached(path, is_detached);
+            }
+        }
+        return false;
+    }
+    virtual bool exec_detached(const char_t* path, bool is_detached = false) const {
+        if ((path) && (path[0])) {
+            ::xos::argvt<char_t> args(&path, 1);
+            char_t **argv = args.elements();
+            int err = 0;
+            if ((argv) && !(err = ::execvp(path, argv))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     ///////////////////////////////////////////////////////////////////////

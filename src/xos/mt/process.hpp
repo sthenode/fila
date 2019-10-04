@@ -33,12 +33,14 @@ namespace mt {
 ///////////////////////////////////////////////////////////////////////
 template 
 <typename TChar = char, typename TEnd = TChar, TEnd VEnd = 0,
+ class TString = char_stringt<TChar, TEnd, VEnd>,
  class TImplements = creatort< joinedt<waited> > >
 
 class _EXPORT_CLASS processt: virtual public TImplements {
 public:
     typedef TImplements implements;
 
+    typedef TString string_t;
     typedef TChar char_t;
     typedef TEnd end_t;
     enum { end = VEnd };
@@ -101,6 +103,7 @@ public:
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
 }; /// class _EXPORT_CLASS processt
+
 typedef processt<> process;
 
 } /// namespace mt
