@@ -13,79 +13,69 @@
 # or otherwise) arising in any way out of the use of this software,
 # even if advised of the possibility of such damage.
 #
-#   File: semaphore.pro
+#   File: thread.pri
 #
 # Author: $author$
-#   Date: 8/23/2019
+#   Date: 10/28/2019
 #
-# QtCreator .pro file for fila executable semaphore
+# QtCreator .pri file for fila executable thread
 ########################################################################
-include(../../../../../build/QtCreator/fila.pri)
-include(../../../../QtCreator/fila.pri)
-include(../../fila.pri)
-include(../../../../QtCreator/app/semaphore/semaphore.pri)
-
-TARGET = $${semaphore_TARGET}
 
 ########################################################################
-# INCLUDEPATH
-#
-INCLUDEPATH += \
-$${semaphore_INCLUDEPATH} \
+# thread
 
-# DEFINES
-# 
-DEFINES += \
-$${semaphore_DEFINES} \
+# thread TARGET
+#
+thread_TARGET = thread
+
+# thread INCLUDEPATH
+#
+thread_INCLUDEPATH += \
+$${fila_INCLUDEPATH} \
+
+# thread DEFINES
+#
+thread_DEFINES += \
+$${fila_DEFINES} \
 
 ########################################################################
-# OBJECTIVE_HEADERS
+# thread OBJECTIVE_HEADERS
 #
-OBJECTIVE_HEADERS += \
-$${semaphore_OBJECTIVE_HEADERS} \
+#thread_OBJECTIVE_HEADERS += \
+#$${FILA_SRC}/fila/base/Base.hh \
 
-# OBJECTIVE_SOURCES
+# thread OBJECTIVE_SOURCES
 #
-OBJECTIVE_SOURCES += \
-$${semaphore_OBJECTIVE_SOURCES} \
+#thread_OBJECTIVE_SOURCES += \
+#$${FILA_SRC}/fila/base/Base.mm \
 
 ########################################################################
-# HEADERS
+# thread HEADERS
 #
-HEADERS += \
-$${semaphore_HEADERS} \
-$${OBJECTIVE_HEADERS} \
+thread_HEADERS += \
+$${FILA_SRC}/xos/mt/thread.hpp \
+$${FILA_SRC}/xos/mt/posix/thread.hpp \
+\
+$${FILA_SRC}/xos/app/console/mt/thread/main_opt.hpp \
+$${FILA_SRC}/xos/app/console/mt/thread/main.hpp \
 
-contains(FILA_OS,linux) {
-HEADERS += \
-$${FILA_SRC}/xos/mt/linux/mach/kern.h \
-$${FILA_SRC}/xos/mt/linux/mach/mach.h \
-$${FILA_SRC}/xos/mt/linux/mach/task.h \
-$${FILA_SRC}/xos/mt/linux/mach/semaphore.h \
-
-}
-
-# SOURCES
+# thread SOURCES
 #
-SOURCES += \
-$${semaphore_SOURCES} \
-
-contains(FILA_OS,linux) {
-SOURCES += \
-$${FILA_SRC}/xos/mt/linux/mach/mach.c \
-
-}
+thread_SOURCES += \
+$${FILA_SRC}/xos/mt/posix/thread.cpp \
+\
+$${FILA_SRC}/xos/app/console/mt/thread/main_opt.cpp \
+$${FILA_SRC}/xos/app/console/mt/thread/main.cpp \
 
 ########################################################################
-# FRAMEWORKS
+# thread FRAMEWORKS
 #
-FRAMEWORKS += \
-$${semaphore_FRAMEWORKS} \
+thread_FRAMEWORKS += \
+$${fila_FRAMEWORKS} \
 
-# LIBS
+# thread LIBS
 #
-LIBS += \
-$${semaphore_LIBS} \
-$${FRAMEWORKS} \
+thread_LIBS += \
+$${fila_LIBS} \
 
 
