@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-/// Copyright (c) 1988-2018 $organization$
+/// Copyright (c) 1988-2019 $organization$
 ///
 /// This software is provided by the author and contributors ``as is'' 
 /// and any express or implied warranties, including, but not limited to, 
@@ -13,26 +13,27 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: semaphore.hpp
+///   File: main_opt.cpp
 ///
 /// Author: $author$
-///   Date: 4/11/2018
+///   Date: 10/28/2019
 ///////////////////////////////////////////////////////////////////////
-#ifndef _XOS_MT_LINUX_SEMAPHORE_HPP
-#define _XOS_MT_LINUX_SEMAPHORE_HPP
-
-#include "xos/mt/posix/semaphore.hpp"
+#include "xos/app/console/mt/thread/main_opt.hpp"
+///#include "xos/console/main_main.cpp"
 
 namespace xos {
+namespace app {
+namespace console {
 namespace mt {
-namespace linux {
+namespace thread {
 
-typedef posix::semaphore semaphore;
+///////////////////////////////////////////////////////////////////////
+///  Class: main_optt
+///////////////////////////////////////////////////////////////////////
+///static main_opt the_main_opt;
 
-} /// namespace linux
+} /// namespace thread
 } /// namespace mt
+} /// namespace console
+} /// namespace app
 } /// namespace xos
-
-#endif /// _XOS_MT_LINUX_SEMAPHORE_HPP 
-        
-

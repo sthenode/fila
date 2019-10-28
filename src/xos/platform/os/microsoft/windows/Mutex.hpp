@@ -22,7 +22,7 @@
 #define _XOS_PLATFORM_OS_MICROSOFT_WINDOWS_MUTEX_HPP
 
 #include "xos/platform/os/microsoft/windows/Handle.hpp"
-#include "xos/mt/os/Mutex.hpp"
+#include "xos/mt/os/mutex.hpp"
 
 namespace xos {
 namespace platform {

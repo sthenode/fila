@@ -23,6 +23,8 @@
 
 #include "xos/mt/pipe.hpp"
 #include "xos/base/created.hpp"
+#include <sys/types.h>
+#include <sys/wait.h>
 
 namespace xos {
 namespace mt {

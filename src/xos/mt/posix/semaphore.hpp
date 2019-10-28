@@ -90,7 +90,7 @@ inline int sem_timedwait_relative_np(sem_t *sem, const struct timespec *timeout)
         if (!(err = ::clock_gettime(CLOCK_REALTIME, &until_time))) {
             until_time.tv_sec +=  timeout->tv_sec;
             until_time.tv_nsec +=  timeout->tv_nsec;
-            err = ::_sem_timedwait(sem, &until_time);
+            err = ::sem_timedwait(sem, &until_time);
         }
         return err;
     }
@@ -157,6 +157,15 @@ public:
     
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
+    using extends::create;
+    virtual bool create(size_t initially_released) {
+        attached_t detached = ((attached_t)unattached);
+        if ((detached = create_attached(initially_released))) {
+            this->attach_created(detached);
+            return true;
+        }
+        return false;
+    }
     virtual attached_t create_attached() {
         return create_attached(0);
     }

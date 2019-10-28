@@ -28,17 +28,20 @@ namespace app {
 namespace console {
 namespace mt {
 
-typedef main_opt maint_extends;
-typedef maint_extends::implements maint_implements;
 ///////////////////////////////////////////////////////////////////////
 ///  Class: maint
 ///////////////////////////////////////////////////////////////////////
-template <class TImplements = maint_implements, class TExtends = maint_extends>
+template 
+<class TVersion = xos::lib::fila::version, 
+ class TExtends = main_optt<TVersion>, 
+ class TImplements = typename TExtends::implements>
+
 class _EXPORT_CLASS maint: virtual public TImplements, public TExtends {
 public:
     typedef TImplements implements;
     typedef TExtends extends;
 
+    typedef typename implements::file_t file_t;
     typedef typename implements::string_t string_t;
     typedef typename implements::char_t char_t;
 

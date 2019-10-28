@@ -106,7 +106,6 @@ protected:
     virtual int posix_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         const char_t *arg = 0;
-        xos::signed_to_chars signed_to_chars;
 
         if ((argc > optind) && (arg = argv[optind]) && (arg[0])) {
             xos::argv args(&arg, 1);
@@ -119,7 +118,7 @@ protected:
                 this->outlln("::fork()...", NULL);
                 if (0 < (pid = ::fork())) {
                     char chars[2];
-                    this->outlln("...pid = ", signed_to_chars(pid), " on ::fork()", NULL);
+                    this->outlln("...pid = ", signed_to_string(pid)(), " on ::fork()", NULL);
 
                     ipipe.close_in();
                     opipe.close_out();
@@ -138,13 +137,13 @@ protected:
                     }
                     this->outlln("::waitpid(pid, &status, options)...", NULL);
                     if (!(pid != (result = ::waitpid(pid, &status, options)))) {
-                        this->outlln("...", signed_to_chars(result), " = ::waitpid(pid, &status, options)", NULL);
+                        this->outlln("...", signed_to_string(result)(), " = ::waitpid(pid, &status, options)", NULL);
                     } else {
-                        this->outlln("...failed ", signed_to_chars(result), " = on ::waitpid(pid, &status, options)", NULL);
+                        this->outlln("...failed ", signed_to_string(result)(), " = on ::waitpid(pid, &status, options)", NULL);
                     }
                 } else {
                     if (0 > (pid)) {
-                        this->outlln("...failed errno = ", signed_to_chars(errno), "on ::fork()", NULL);
+                        this->outlln("...failed errno = ", signed_to_string(errno)(), "on ::fork()", NULL);
                     } else {
                         int err = 0, *p = 0, *pdup[3];
                         

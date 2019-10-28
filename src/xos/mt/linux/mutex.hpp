@@ -21,42 +21,13 @@
 #ifndef _XOS_MT_LINUX_MUTEX_HPP
 #define _XOS_MT_LINUX_MUTEX_HPP
 
-#include "xos/base/mutex.hpp"
+#include "xos/mt/posix/mutex.hpp"
 
 namespace xos {
 namespace mt {
 namespace linux {
 
-typedef mutex mutext_implements;
-///////////////////////////////////////////////////////////////////////
-///  Class: mutext
-///////////////////////////////////////////////////////////////////////
-template <class TImplements = mutext_implements>
-class _EXPORT_CLASS mutext: virtual public TImplements {
-public:
-    typedef TImplements implements;
-};
-typedef mutext<> mutex;
-
-typedef mutex mutext_implements;
-typedef mutex_extend mutext_extends;
-///////////////////////////////////////////////////////////////////////
-///  Class: mutext
-///////////////////////////////////////////////////////////////////////
-template <class TImplements = mutext_implements, class TExtends = mutext_extends>
-class _EXPORT_CLASS mutext: virtual public TImplements, public TExtends {
-public:
-    typedef TImplements implements;
-    typedef TExtends extends;
-
-    mutext(const mutext &copy) {
-    }
-    mutext() {
-    }
-    virtual ~mutext() {
-    }
-};
-typedef mutext<> mutex;
+typedef posix::mutex mutex;
 
 } /// namespace linux
 } /// namespace mt

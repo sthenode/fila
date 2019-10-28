@@ -1,5 +1,6 @@
+/*/
 ///////////////////////////////////////////////////////////////////////
-/// Copyright (c) 1988-2018 $organization$
+/// Copyright (c) 1988-2019 $organization$
 ///
 /// This software is provided by the author and contributors ``as is'' 
 /// and any express or implied warranties, including, but not limited to, 
@@ -13,26 +14,32 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: semaphore.hpp
+///   File: os.h
 ///
 /// Author: $author$
-///   Date: 4/11/2018
+///   Date: 10/27/2019
 ///////////////////////////////////////////////////////////////////////
-#ifndef _XOS_MT_LINUX_SEMAPHORE_HPP
-#define _XOS_MT_LINUX_SEMAPHORE_HPP
+/*/
+#ifndef _XOS_MT_LINUX_OS_H
+#define _XOS_MT_LINUX_OS_H
 
-#include "xos/mt/posix/semaphore.hpp"
+#include "xos/platform/platform.h"
 
+#if defined(linux) && !defined(platform_defined_linux)
+#define platform_defined_linux linux
+#undef linux
+#endif /// defined(linux) && !defined(platform_defined_linux)
+
+#if defined(__cplusplus)
 namespace xos {
 namespace mt {
 namespace linux {
+#endif /*/ defined(__cplusplus) /*/
 
-typedef posix::semaphore semaphore;
+#if defined(__cplusplus)
+} /*/ namespace linux /*/
+} /*/ namespace mt /*/
+} /*/ namespace xos /*/
+#endif /*/ defined(__cplusplus) /*/
 
-} /// namespace linux
-} /// namespace mt
-} /// namespace xos
-
-#endif /// _XOS_MT_LINUX_SEMAPHORE_HPP 
-        
-
+#endif /*/ _XOS_MT_LINUX_OS_H /*/

@@ -1,5 +1,6 @@
+/*/
 ///////////////////////////////////////////////////////////////////////
-/// Copyright (c) 1988-2018 $organization$
+/// Copyright (c) 1988-2019 $organization$
 ///
 /// This software is provided by the author and contributors ``as is'' 
 /// and any express or implied warranties, including, but not limited to, 
@@ -13,26 +14,61 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: semaphore.hpp
+///   File: lock_set.c
 ///
 /// Author: $author$
-///   Date: 4/11/2018
+///   Date: 10/27/2019
 ///////////////////////////////////////////////////////////////////////
-#ifndef _XOS_MT_LINUX_SEMAPHORE_HPP
-#define _XOS_MT_LINUX_SEMAPHORE_HPP
+/*/
+#include "xos/mt/linux/mach/lock_set.h"
 
-#include "xos/mt/posix/semaphore.hpp"
-
+#if defined(__cplusplus)
 namespace xos {
 namespace mt {
 namespace linux {
+namespace mach {
+#endif /*/ defined(__cplusplus) /*/
 
-typedef posix::semaphore semaphore;
+#if defined(__cplusplus)
+} /*/ namespace mach /*/
+} /*/ namespace linux /*/
+} /*/ namespace mt /*/
+} /*/ namespace xos /*/
+#endif /*/ defined(__cplusplus) /*/
 
-} /// namespace linux
-} /// namespace mt
-} /// namespace xos
+kern_return_t lock_set_create (
+        task_t task,
+        lock_set_t *new_lock_set,
+        int n_ulocks,
+        int policy
+) {
+    return KERN_FAILURE;
+}
 
-#endif /// _XOS_MT_LINUX_SEMAPHORE_HPP 
-        
+kern_return_t lock_set_destroy (
+        task_t task,
+        lock_set_t lock_set
+) {
+    return KERN_FAILURE;
+}
 
+kern_return_t lock_acquire (
+        lock_set_t lock_set,
+        int lock_id
+) {
+    return KERN_FAILURE;
+}
+
+kern_return_t lock_release (
+        lock_set_t lock_set,
+        int lock_id
+) {
+    return KERN_FAILURE;
+}
+
+kern_return_t lock_try (
+        lock_set_t lock_set,
+        int lock_id
+) {
+    return KERN_FAILURE;
+}

@@ -1,5 +1,6 @@
+/*/
 ///////////////////////////////////////////////////////////////////////
-/// Copyright (c) 1988-2018 $organization$
+/// Copyright (c) 1988-2019 $organization$
 ///
 /// This software is provided by the author and contributors ``as is'' 
 /// and any express or implied warranties, including, but not limited to, 
@@ -13,26 +14,46 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: semaphore.hpp
+///   File: mach.h
 ///
 /// Author: $author$
-///   Date: 4/11/2018
+///   Date: 10/27/2019
 ///////////////////////////////////////////////////////////////////////
-#ifndef _XOS_MT_LINUX_SEMAPHORE_HPP
-#define _XOS_MT_LINUX_SEMAPHORE_HPP
+/*/
+#ifndef _XOS_MT_LINUX_MACH_MACH_H
+#define _XOS_MT_LINUX_MACH_MACH_H
 
-#include "xos/mt/posix/semaphore.hpp"
+#include "xos/mt/linux/mach/kern.h"
 
+typedef pointer_t mach_port_t;
+
+typedef int clock_res_t; /* clock resolution type */
+struct mach_timespec {
+    unsigned int    tv_sec;  /* seconds */
+    clock_res_t     tv_nsec; /* nanoseconds */
+};
+typedef struct mach_timespec mach_timespec_t;
+
+typedef int sync_policy_t;
+#define SYNC_POLICY_FIFO		0x0
+#define SYNC_POLICY_FIXED_PRIORITY	0x1
+#define SYNC_POLICY_REVERSED		0x2
+#define SYNC_POLICY_ORDER_MASK		0x3
+#define SYNC_POLICY_LIFO		(SYNC_POLICY_FIFO|SYNC_POLICY_REVERSED)
+#define SYNC_POLICY_MAX			0x7
+
+#if defined(__cplusplus)
 namespace xos {
 namespace mt {
 namespace linux {
+namespace mach {
+#endif /*/ defined(__cplusplus) /*/
 
-typedef posix::semaphore semaphore;
+#if defined(__cplusplus)
+} /*/ namespace mach /*/
+} /*/ namespace linux /*/
+} /*/ namespace mt /*/
+} /*/ namespace xos /*/
+#endif /*/ defined(__cplusplus) /*/
 
-} /// namespace linux
-} /// namespace mt
-} /// namespace xos
-
-#endif /// _XOS_MT_LINUX_SEMAPHORE_HPP 
-        
-
+#endif /*/ _XOS_MT_LINUX_MACH_MACH_H /*/
