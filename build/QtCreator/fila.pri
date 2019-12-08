@@ -21,7 +21,11 @@
 # build QtCreator .pri file for fila
 ########################################################################
 
+UNAME = $$system(uname)
+
+contains(UNAME,Darwin) {
 BUILD_OS = FILA_OS
+} # contains(UNAME,Darwin)
 
 ########################################################################
 # rostra

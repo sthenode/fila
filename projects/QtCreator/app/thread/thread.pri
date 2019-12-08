@@ -53,6 +53,8 @@ $${fila_DEFINES} \
 # thread HEADERS
 #
 thread_HEADERS += \
+$${FILA_SRC}/xos/platform/posix/pthread.hpp \
+\
 $${FILA_SRC}/xos/mt/thread.hpp \
 $${FILA_SRC}/xos/mt/posix/thread.hpp \
 \
@@ -62,6 +64,8 @@ $${FILA_SRC}/xos/app/console/mt/thread/main.hpp \
 # thread SOURCES
 #
 thread_SOURCES += \
+$${FILA_SRC}/xos/platform/posix/pthread.cpp \
+\
 $${FILA_SRC}/xos/mt/posix/thread.cpp \
 \
 $${FILA_SRC}/xos/app/console/mt/thread/main_opt.cpp \
