@@ -166,8 +166,8 @@ public:
     threadt(): ran_(*this), forked_(false) {
     }
     virtual ~threadt() {
-        if (!(this->destroyed())) {
-            throw create_exception(destroy_failed);
+        if (!(this->joined())) {
+            throw join_exception(join_failed);
         }
     }
 
@@ -356,8 +356,8 @@ public:
         }
     }
     virtual ~threadt() {
-        if (!(this->destroyed())) {
-            throw create_exception(destroy_failed);
+        if (!(this->joined())) {
+            throw join_exception(join_failed);
         }
     }
 

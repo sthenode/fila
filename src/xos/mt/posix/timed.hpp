@@ -27,10 +27,20 @@
 #include <time.h>
 #include <errno.h>
 
+#if !defined(HAS_POSIX_TIMEOUTS)
+#if defined(_POSIX_TIMEOUTS) && (_POSIX_TIMEOUTS >=0 )
+#define HAS_POSIX_TIMEOUTS
+#endif /// defined(_POSIX_TIMEOUTS) && (_POSIX_TIMEOUTS >=0 )
+#endif /// !defined(HAS_POSIX_TIMEOUTS)
+
+///
+/// clock_gettime
+///
 #if !defined(CLOCK_REALTIME)
 #define CLOCK_REALTIME 0
 #define clockid_t int
 #if !defined(CLOCK_HAS_GETTIME)
+#define CLOCK_HAS_GETTIME
 inline int clock_gettime(clockid_t clk_id, struct timespec *res) {
     if ((res) && (CLOCK_REALTIME == clk_id)) {
         int err = 0;
@@ -47,34 +57,12 @@ inline int clock_gettime(clockid_t clk_id, struct timespec *res) {
     }
     return EINVAL;
 }
-#define CLOCK_HAS_GETTIME
 #endif /// !defined(CLOCK_HAS_GETTIME)
 #endif /// !defined(CLOCK_REALTIME)
 
 namespace xos {
 namespace mt {
 namespace posix {
-
-/*///////////////////////////////////////////////////////////////////////
-/// Function: timed_until_time
-///////////////////////////////////////////////////////////////////////
-inline struct timespec timed_until_time(mseconds_t milliseconds) {
-    struct timespec until_time;
-#if defined(CLOCK_HAS_GETTIME)
-    int err = 0;
-    if ((err = ::clock_gettime(CLOCK_REALTIME, &until_time))) {
-        until_time.tv_sec = 0;
-        until_time.tv_nsec = 0;
-        return until_time;
-    }
-#else /// defined(CLOCK_HAS_GETTIME)  
-    until_time.tv_sec = 0;
-    until_time.tv_nsec = 0;
-#endif /// defined(CLOCK_HAS_GETTIME)  
-    until_time.tv_sec +=  mseconds_seconds(milliseconds);
-    until_time.tv_nsec +=  mseconds_nseconds(mseconds_mseconds(milliseconds));
-    return until_time;
-}*/
 
 } /// namespace posix
 } /// namespace mt
